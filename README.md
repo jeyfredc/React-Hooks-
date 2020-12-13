@@ -4,7 +4,7 @@
 
 [Fundamentos Reactjs](#Fundamentos-Reactjs)
 
-[]()
+[JSX y Recorrer Arrays con Keys](#JSX-y-Recorrer-Arrays-con-Keys)
 
 []()
 
@@ -419,6 +419,351 @@ export default Contador;
 ```
 
 ![assets-git/17.png](assets-git/17.png)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## JSX y Recorrer Arrays con Keys
+
+**JSX**
+
+La presentacion del siguiente bloque de codigo no se que conoce como un string o un html
+
+`const element = <h1>Hello, world!</h1>;`
+
+Se llama JSX y es una extension de la sintaxis de JavaSscript el cual es lo recomendable para usar con React para describir como deberia ser la interfaz de usuario. JSX puede recordar a un lenguaje de plantilla, pero viene con JavaScript.
+
+A continuacion se van a modificar los elementos del capitulo pasado.
+
+En la carpeta components crear un archivo llamado **Jsx.js** y dentro de este archivo hacer la construccion basica del componente
+
+```
+import React from 'react'
+
+const Jsx = () => {
+    return (  );
+}
+ 
+export default Jsx;
+```
+
+Dentro de la estructura de este podemos hacer una condicion con un if ternario para esto pintamos un h2 preguntando Frio o Calor  en h4 la condicion `temperatura > 20 ? 'Calor' : 'Frio`, esta expresion esta preguntando. Si la temperatura es mayor a 20 entonces imprima Calor si es verdadera la condicion de lo contrario es decir si es menos imprima Frio. Y todo esto de cumple dada una condicion que la agregamos antes del return creando una constante que se llama temperatura
+
+**Nota:** Recordar que como React trabaja con los componentes y para tener toda su estructura debe estar dentro de Fragment importandolo con la libreria o usar contenedores div
+
+```
+import React, {Fragment}from 'react'
+
+const Jsx = () => {
+
+    const temperatura = 21;
+
+    return ( 
+        <Fragment>
+        <h2>Frio o Calor?</h2>
+        <h4>
+            {
+                temperatura > 20 ? 'Calor' : 'Frio'
+            }
+        </h4>
+        </Fragment>
+     );
+}
+ 
+export default Jsx;
+```
+
+Para hacer uso del componente ahora pasamos a **App.js**, y lo importamos para luego imprimirlo en el navegador. En este capitulo ya no vamos a hacer uso del componente Contador, motivo por el cual no se presenta en este documento
+
+```
+import React from 'react';
+import Jsx from './components/Jsx'
+
+function App() {
+  return (
+    <div >
+      <Jsx/>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+Recordando que la condicion es mayor a 20 entonces en el navegador debe aparecer la palabra Calor 
+
+![assets-git/18.png](assets-git/18.png)
+
+A continuacion vamos a crear un nuevo componente el cual se llamara **Lista.js** la cual se utilizara para crear un arreglo y recorrerlo haciendo uso de useState. Recordando que se establece la estructura basica utilizando abreviaciones como **imr** y **sfc** para autocomplentar esta sintaxis
+
+```
+import React from 'react'
+
+const  = () => {
+    return (  );
+}
+ 
+export default ;
+```
+
+A continuacion hacemos el llamado de useState y de fragment para poder usar cada uno de ellos en sus respectivos sitios.
+
+creamos una constante donde el estado se llama arrayNumero, y el modificador setArrayNumero y su estado se inicializa con un array que recibe numeros, los cuales cuando usemos el metodo map, cada uno de estos numeros se van a representar como un item.
+
+Despues para nombrar este ejercicio encerramos la palabra Lista dentro de un h2 y a continuacion utilizamos el estado para recorrerlo con el metodo map y despues retornarlo en una lista entre etiquetas de parrafo
+
+```
+import React, {useState, Fragment} from 'react'
+
+const Lista = () => {
+
+    const [arrayNumero, setArrayNumero] = useState([1, 2, 3, 4, 5, 6]);
+
+    return ( 
+        <Fragment>
+        <h2>Lista</h2>
+        {
+            arrayNumero.map((item) => 
+            <p>{item}</p>)
+        }
+        </Fragment>
+     );
+}
+ 
+export default Lista;
+```
+
+Ahora lo importamos dentro del archivo **App.js** y lo utilizamos como otro componente debajo de Jsx
+
+```
+import React from 'react';
+import Jsx from './components/Jsx'
+import Lista from './components/Lista'
+
+function App() {
+  return (
+    <div >
+      <Jsx/>
+      <Lista/>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+De esta forma visualizamos en el navegador ambos componentes y el recorrido que hizo el metodo map implementado en el componente de Lista
+
+![assets-git/19.png](assets-git/19.png)
+
+Al abrir la consola con **ctrl + shift +j**, esta informando sobre un error que al usar el metodo map esta obligado a pasar un segundo parametro que acompaña a cada numero del recorrido el cual es 0 y se va a representar como index.
+
+Ademas de esto antes de cerrar la primer etiqueta p se debe llamar el atributo key y pasar como parametro a index tambien.
+
+De esta forma, si en vez de empezar en 1, el array comenzara en 0 se imprimirian valores como (0,0, 1,1, 2,2, 3,3, 4,4, 5,5, 6,6)
+
+Cuando lo visualicen en el navegador lo van a comprender mejor
+
+```
+import React, {useState, Fragment} from 'react'
+
+const Lista = () => {
+
+    const [arrayNumero, setArrayNumero] = useState([1, 2, 3, 4, 5, 6]);
+
+    return ( 
+        <Fragment>
+        <h2>Lista</h2>
+        {
+            arrayNumero.map((item, index) => 
+            <p key={index}>{item} - {index}</p>)
+        }
+        </Fragment>
+     );
+}
+ 
+export default Lista;
+```
+
+![assets-git/20.png](assets-git/20.png)
+
+Lo unico que se ve ahora del lado derecho, en la consola es una advertencia que indica que no se esta haciendo uso de setArrayNumero
+
+A continuacion vamos a hacer uso del modificador pero antes de eso vamos a añadir un evento onClick en un boton que vamos a crear debajo de la lista y se va a llevar por nombre la palabra agregar elemento
+
+```
+import React, {useState, Fragment} from 'react'
+
+const Lista = () => {
+
+    const [arrayNumero, setArrayNumero] = useState([1, 2, 3, 4, 5, 6]);
+
+    return ( 
+        <Fragment>
+        <h2>Lista</h2>
+        <button onClick={agregarElemento} >Agregar elemento</button>
+        {
+            arrayNumero.map((item, index) => 
+            <p key={index}>{item} - {index}</p>)
+        }
+        </Fragment>
+     );
+}
+ 
+export default Lista;
+```
+
+Si se deja de esta forma por el momento el navegador mostrara un error porque no se esta haciendo nada con el evento que se esta declarando que es el que esta entre `{agregarElemento}`
+
+![assets-git/21.png](assets-git/21.png)
+
+Para dejar de ver esto error hay que agregar funcionalidad mediante una constante que se llame agregar elemento y se pase un arrow function que escuche el evento.
+
+A continuacion como se va a dar uso del modificador se debe tener en cuenta que el estado inicial se declaro como un array, por tal motivo el modificador tambien debe ser un array que en un principio va a recibir el numero 7
+
+```
+import React, {useState, Fragment} from 'react'
+
+const Lista = () => {
+
+    const [arrayNumero, setArrayNumero] = useState([1, 2, 3, 4, 5, 6]);
+
+    const agregarElemento = () => {
+        console.log('click')
+        setArrayNumero([7])
+    }
+
+    return ( 
+        <Fragment>
+        <h2>Lista</h2>
+        <button onClick={agregarElemento} >Agregar elemento</button>
+        {
+            arrayNumero.map((item, index) => 
+            <p key={index}>{item} - {index}</p>)
+        }
+        </Fragment>
+     );
+}
+ 
+export default Lista;
+```
+
+El navegador se va a presentar con la lista de arreglos a continuacion
+
+![assets-git/22.png](assets-git/22.png)
+
+pero al dar click sobre el boton agregar elemento esta lista cambio por 7,0. y entonces lo que sucede es que se pierde el estado inicial que es la lista
+
+![assets-git/23.png](assets-git/23.png)
+
+para corregir este error se va a hacer uso del operador de propagacion **(...)**, el cual esta representado por 3 puntos, este operador sirve en este caso para concatenar 2 arreglos como el ejemplo a continuacion
+
+`const a = [1,2,3]`
+`const b = [4,5,6]`
+
+para declararlos de una manera mas simple se crea una constante c de esta forma y se concatena todo en un solo array
+
+`const c = [...a, ...b]`
+
+`console.log(c)`
+
+![assets-git/24.png](assets-git/24.png)
+
+Continuando con el ejemplo y habiendo visto el concepto del operador de propagacion se va a hacer uso de este para concatenarlo con el numero 7 y presentarlo debajo del resto de la lista al hacer click sobre el boton Agregar elemento
+
+```
+import React, {useState, Fragment} from 'react'
+
+const Lista = () => {
+
+    const [arrayNumero, setArrayNumero] = useState([1, 2, 3, 4, 5, 6]);
+
+    const agregarElemento = () => {
+        console.log('click')
+        setArrayNumero([
+            ...arrayNumero,
+            7
+        ])
+    }
+
+    return ( 
+        <Fragment>
+        <h2>Lista</h2>
+        <button onClick={agregarElemento} >Agregar elemento</button>
+        {
+            arrayNumero.map((item, index) => 
+            <p key={index}>{item} - {index}</p>)
+        }
+        </Fragment>
+     );
+}
+ 
+export default Lista;
+
+```
+
+y como resultado obtenemos primero la lista normal
+
+![assets-git/25.png](assets-git/25.png)
+
+Despues hacemos click y obtenemos debajo el 7
+
+![assets-git/26.png](assets-git/26.png)
+
+y si seguimnos dando click sobre el boton va a continuar imprimiendose el 7 pero cambiando su llave
+
+![assets-git/27.png](assets-git/27.png)
+
+A continuacion ahora la funcion se va a volver mas dinamica para imprimir o continuar con el resto de numeros despues del 7
+
+para esto se va a crear un nuevo estado que va a recibir a numero y a setNumero y como el numero con el que queremos continuar dinamicamente lo vamos a inicializar con el numero 7 y lo llamamos en la funcion agregarElemento para poderlo usar e imprimirlo como el estado
+
+```
+import React, {useState, Fragment} from 'react'
+
+const Lista = () => {
+
+    const [arrayNumero, setArrayNumero] = useState([1, 2, 3, 4, 5, 6]);
+
+    const [numero, setNumero] = useState(7)
+
+    const agregarElemento = () => {
+
+        setNumero(numero + 1)
+
+        setArrayNumero([
+            ...arrayNumero,
+            numero
+        ])
+    }
+
+    return ( 
+        <Fragment>
+        <h2>Lista</h2>
+        <button onClick={agregarElemento} >Agregar elemento</button>
+        {
+            arrayNumero.map((item, index) => 
+            <p key={index}>{item} - {index}</p>)
+        }
+        </Fragment>
+     );
+}
+ 
+export default Lista;
+
+```
+
+Nuevamente revisamos el navegador y tenemos una lista inicial
+
+![assets-git/28.png](assets-git/28.png)
+
+y con el boton agregar elemento continuamos imprimendo numeros distintos
+
+![assets-git/29.png](assets-git/29.png)
+
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
