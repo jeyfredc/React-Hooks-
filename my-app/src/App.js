@@ -1,12 +1,11 @@
 import React from 'react';
-import Jsx from './components/Jsx'
-import Lista from './components/Lista'
+import Formulario from './components/Formulario'
+
 
 function App() {
   return (
-    <div >
-      <Jsx/>
-      <Lista/>
+    <div className="container mt-5" >
+      <Formulario/>
     </div>
   );
 }

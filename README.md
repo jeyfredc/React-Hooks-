@@ -6,7 +6,7 @@
 
 [JSX y Recorrer Arrays con Keys](#JSX-y-Recorrer-Arrays-con-Keys)
 
-[]()
+[Formularios onChange & onSubmit](Formularios-onChange-&-onSubmit)
 
 []()
 
@@ -764,6 +764,416 @@ y con el boton agregar elemento continuamos imprimendo numeros distintos
 
 ![assets-git/29.png](assets-git/29.png)
 
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## Formularios onChange & onSubmit
+
+En este capitulo veremos lo que son los Formularios.
+
+Nuevamente dentro de la carpeta components crear un archivo que se llame **Formulario.js** y construir la estructura basica con los comando **imr** y **sfc**
+
+```
+import React from 'react'
+
+const Formulario = () => {
+    return (  );
+}
+ 
+export default Formulario;
+```
+
+dentro del return crear una etiqueta h1 que lleve por nombre Formulario.
+
+A continuacion pasar a **App.js** y ya no se van a utilzar los archivos de la clase anterior entonces solamente importamos lo que necesitamos, que es el componente de Formulario
+
+```
+import React from 'react';
+import Formulario from './components/Formulario'
+
+
+function App() {
+  return (
+    <div >
+      <Formulario/>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+y obtenemos el render en el navegador del componente Formulario
+
+![assets-git/30.png](assets-git/30.png)
+
+Para este capitulo se va hacer uso de [Bootstrap](https://getbootstrap.com/). Si no hay conocimiento de este pueden ver videos para aprender en el siguiente [enlace](https://www.youtube.com/watch?v=z7ecV0tL1Gg&ab_channel=Bluuweb%21).
+
+Lo que se hace es importar el cdn que se encuentra en la pagina de Bootstrap y a continuacion, abrir la carpeta **public** del proyecto y copiar este cdn en el archivo **index.html** como se muestra en la imagen a continuacion 
+
+```
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+```
+
+![assets-git/31.png](assets-git/31.png)
+
+Al guardar los cambios ya se obtendra un cambio en los estilos del navegador y el titulo de Formulario se presentara de una manera distinta
+
+![assets-git/32.png](assets-git/32.png)
+
+para empezar a obtener otro tipo de cambios se agregan clases a las etiquetas con el keyword `className`. si estuviera trabajando con html puro se usaria el keyword `class`, y esto es una de las diferencias que proporciona React. Para centrar mas el contenido y tener un margen top de 5, escribimos a continuacion de la etiqueta div del archivo **App.js** las propiedades del contenedor con un `className="container mt-5"`
+
+```
+import React from 'react';
+import Formulario from './components/Formulario'
+
+
+function App() {
+  return (
+    <div className="container mt-5" >
+      <Formulario/>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+Para empezar a trabajar con el componente nuevamente abrimos el archivo **Formulario.js**, importamos `{Fragment, useState}` y a continuacion de la etiqueta h1 agregamos una etiqueta Form y despues los input
+
+```
+import React, {Fragment, useState} from 'react'
+
+const Formulario = () => {
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+            <form className="row">
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese nombre">
+                    </input>
+                </div>
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese apellido"></input>
+                </div>
+                <div className="col-md-3">
+                    <button>Enviar</button>
+                </div>
+            </form>
+        </Fragment>
+     );
+}
+ 
+export default Formulario;
+```
+
+De momento el render en el navegador se ve de la siguiente forma y esto obliga a que se debe mejorar el diseño y hacer uso de los estilos de Bootstrap
+
+![assets-git/33.png](assets-git/33.png)
+
+A continuacion se agregan las clases al formulario a los input y al boton para que se presenten de una forma visual mas agradable
+
+```
+import React, {Fragment, useState} from 'react'
+
+const Formulario = () => {
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+            <form className="row">
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese nombre"
+                        className="form-control"
+                        type="text">
+                    </input>
+                </div>
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese apellido"
+                        className="form-control"
+                        type="text">
+                    </input>
+                </div>
+                <div className="col-md-3">
+                    <button className="btn btn-primary" type="submit">Enviar</button>
+                </div>
+            </form>
+        </Fragment>
+     );
+}
+ 
+export default Formulario;
+```
+
+![assets-git/34.png](assets-git/34.png)
+
+Ahora cada input se va a relacionar con algun Hook y para eso vamos a hacer uso de useState antes del return y creamos el estado el cual se va a llamar datos y su modificador sera setDatos y el estado se va a inicializar con un objeto `{}` el cual se va a inicializar con un nombre y un apellido vacio
+
+```
+{
+  nombre : '',
+  apellido: '',
+}
+```
+
+Ahora se debe relacionar cada uno de los input con cada objeto por tal motivo es recomendable que en los input se agregue el atributo name y tengan los mismos nombres de estos objetos como se ve a continuacion
+
+```
+import React, {Fragment, useState} from 'react'
+
+const Formulario = () => {
+
+    const [datos, setDatos] = useState({
+        nombre: '',
+        apellido: '',
+    })
+
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+            <form className="row">
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese nombre"
+                        className="form-control"
+                        type="text"
+                        name="nombre">
+                    </input>
+                </div>
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese apellido"
+                        className="form-control"
+                        type="text"
+                        name="apellido">
+                    </input>
+                </div>
+                <div className="col-md-3">
+                    <button className="btn btn-primary" type="submit">Enviar</button>
+                </div>
+            </form>
+        </Fragment>
+     );
+}
+ 
+export default Formulario;
+```
+
+**Nota:** El escribir los mismos nombres que tiene el objeto en los atributos de cada input no significa que esten conectados de alguna forma, pero es uno de los primeros pasos a establecer y sirve para que mas adelante se vea la funcionalidad de esto
+
+___
+
+Al utilizar google Chrome hay una herramienta de los devTools que se llama Components y de esta forma se pueden ver los componentes de nuestra aplicacion en el navegador, para instalarlo pueden seguir al siguiente [enlace](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=es).
+
+![assets-git/35.png](assets-git/35.png)
+
+Ahora se va hacer uso del evento **onChange** que va a estar en los atributos del input, el cual estara pendiente de los cambios que se vayan registrando y dentro de este va a tener una funcion la cual se puede llamar de cualquier forma pero para esta ocasion se llamara handleInputChange `onChange={handleInputChange}` y ahora se debe crear la funcion en la parte del JavaScript el cual ira de la siguiente forma
+
+`const handleInputChange = () => {}}`, como esta es una funcion que esta a la escucha de un evento entre los parentesis se coloca la palabra event o la que se considere conveniente, esto se hace por que es una convencion del lenguaje.
+
+Dentro de este evento se va a agregar un console.log que dice Funciona!
+
+```
+import React, {Fragment, useState} from 'react'
+
+const Formulario = () => {
+
+    const [datos, setDatos] = useState({
+        nombre: '',
+        apellido: '',
+    })
+
+    const handleInputChange = (event) => {
+        console.log("Funciona!")
+    }
+
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+            <form className="row">
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese nombre"
+                        className="form-control"
+                        type="text"
+                        name="nombre"
+                        onChange={handleInputChange}>
+                    </input>
+                </div>
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese apellido"
+                        className="form-control"
+                        type="text"
+                        name="apellido"
+                        onChange={handleInputChange}>
+                    </input>
+                </div>
+                <div className="col-md-3">
+                    <button className="btn btn-primary" type="submit">Enviar</button>
+                </div>
+            </form>
+        </Fragment>
+     );
+}
+ 
+export default Formulario;
+```
+
+Ahora al guardar los cambios verificar la consola del navegador y escribir algo sobre los campos de ambos formularios para verificar como en la consola se esta imprimiendo con cada letra que colocamos la palabra Funciona!
+
+![assets-git/36.png](assets-git/36.png)
+
+Ahora en el console.log cambiar `"Funciona!"` por `event.target.value` el cual va a detectar el valor que coloquemos en cada input
+
+**Nota:** si en vez de haber pasado la palabra event como parametro pasaron otra por ejemplo `pepito` entonces colocar `pepito.target.value`
+
+y como se ve a continuacion cada letra escrita la esta tomando esta propiedad
+
+![assets-git/37.png](assets-git/37.png)
+
+Ahora hay que hacer uso del modificador setDatos y a continuacion del console.log se establece setDatos. Se debe tener en cuenta que el operador de propagacion **...**, hace una copia de los datos y concatena. Entonces utilzamos junto con este operador la propiedad para establecer el nombre y el apellido, en este momento es cuando se relaciona el atributo name que se le dio a cada input y que es igual a los nombres que contiene el objeto del valor inicial del estado
+
+```
+        setDatos({
+            ...datos,
+            [event.target.name] : event.target.value
+        }
+```
+
+```
+import React, {Fragment, useState} from 'react'
+
+const Formulario = () => {
+
+    const [datos, setDatos] = useState({
+        nombre: '',
+        apellido: '',
+    })
+
+    const handleInputChange = (event) => {
+        console.log(event.target.value)
+        setDatos({
+            ...datos,
+            [event.target.name] : event.target.value
+        }
+        )
+    }
+
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+            <form className="row">
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese nombre"
+                        className="form-control"
+                        type="text"
+                        name="nombre"
+                        onChange={handleInputChange}>
+                    </input>
+                </div>
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese apellido"
+                        className="form-control"
+                        type="text"
+                        name="apellido"
+                        onChange={handleInputChange}>
+                    </input>
+                </div>
+                <div className="col-md-3">
+                    <button className="btn btn-primary" type="submit">Enviar</button>
+                </div>
+            </form>
+        </Fragment>
+     );
+}
+ 
+export default Formulario;
+```
+
+Ahora dirigir nuevamente a la pestaña de componentes de los devTools y desplegar en los hools el nombre y el apellido para ver como cada componente esta obteniendo el estado de lo que escribimos en los campos del nombre y el apellido
+
+![assets-git/38.png](assets-git/38.png)
+
+Si se quiere imprimir el nobmre de otra forma tambien debajo del cierre de la etiqueta formse puede incluir una etiqueta h3 o de parrafo y llamar el nombre y el apellido entre `<h3>{datos.nombre} - {datos.apellido}</h3>`
+
+![assets-git/39.png](assets-git/39.png)
+
+Existe otro evento llamado onSubmit que ira directamente en el formulario y tendra una funcion llamada `enviarDatos`, la cual que se tiene que construir en la parte del javaScript, esta funcion tambien va a recibir como parametro a `event` y este hace uso de un metodo que se llama `preventDefault()` que es como hacer un Get para obtener los datos y ahorrar pasos que obtienen el procesamiento de manera automatica. Despues de esto se hace un console.log de `datos.nombre` y `datos.apellido`.
+
+```
+import React, {Fragment, useState} from 'react'
+
+const Formulario = () => {
+
+    const [datos, setDatos] = useState({
+        nombre: '',
+        apellido: '',
+    })
+
+    const handleInputChange = (event) => {
+        // console.log(event.target.value)
+        setDatos({
+            ...datos,
+            [event.target.name] : event.target.value
+        }
+        )
+    }
+
+    const enviarDatos = (event) => {
+        event.preventDefault();
+        console.log(datos.nombre + ' ' + datos.apellido)
+    }
+
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+            <form className="row" onSubmit={enviarDatos}>
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese nombre"
+                        className="form-control"
+                        type="text"
+                        name="nombre"
+                        onChange={handleInputChange}>
+                    </input>
+                </div>
+                <div className="col-md-3">
+                    <input
+                        placeholder="Ingrese apellido"
+                        className="form-control"
+                        type="text"
+                        name="apellido"
+                        onChange={handleInputChange}>
+                    </input>
+                </div>
+                <div className="col-md-3">
+                    <button className="btn btn-primary" type="submit">Enviar</button>
+                </div>
+            </form>
+            <h3>{datos.nombre} - {datos.apellido}</h3>
+        </Fragment>
+     );
+}
+ 
+export default Formulario;
+
+```
+
+Este evento ayuda a que cuando demos click sobre el boton enviar, la consola capture los datos que le ingresemos
+
+![assets-git/40.png](assets-git/40.png)
+
+![assets-git/41.png](assets-git/41.png)
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
