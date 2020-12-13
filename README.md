@@ -6,7 +6,7 @@
 
 [JSX y Recorrer Arrays con Keys](#JSX-y-Recorrer-Arrays-con-Keys)
 
-[Formularios onChange & onSubmit](Formularios-onChange-&-onSubmit)
+[Formularios onChange y onSubmit](Formularios-onChange-y-onSubmit)
 
 []()
 
@@ -769,7 +769,7 @@ y con el boton agregar elemento continuamos imprimendo numeros distintos
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
 </div>
 
-## Formularios onChange & onSubmit
+## Formularios onChange y onSubmit
 
 En este capitulo veremos lo que son los Formularios.
 
