@@ -6,9 +6,9 @@
 
 [JSX y Recorrer Arrays con Keys](#JSX-y-Recorrer-Arrays-con-Keys)
 
-[Formularios onChange y onSubmit](Formularios-onChange-y-onSubmit)
+[Formularios onChange y onSubmit](#Formularios-onChange-y-onSubmit)
 
-[]()
+[React Hook Form](#React-Hook-Form)
 
 []()
 
@@ -1178,3 +1178,270 @@ Este evento ayuda a que cuando demos click sobre el boton enviar, la consola cap
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
 </div>
+
+## React Hook Form
+
+Esta es una extension que ayuda a realizar formularios de una manera mas sencilla y que se encuentra en el siguiente [enlace](https://react-hook-form.com/get-started), donde se puede seguir toda la documentacion 
+
+En la parte donde dice comenzar ahora esta el comando para instalar esta extension en nuestro proyecto.
+
+![assets-git/42.png](assets-git/42.png)
+
+Recordar que se debe estar en la ubicacion del proyecto en la terminal y ejecutar el siguiente comando para realizar la instalacion
+
+`npm install react-hook-form`
+
+A continuacion crear un nuevo componente que conecte con **App.js**, el componente nombrarlo como **FormHook.js** y en **App.js** llamar solo al nuevo componente creado el cual queda asi 
+
+```
+import React, {Fragment} from 'react'
+
+const FormHook = () => {
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+        </Fragment> 
+     );
+}
+ 
+export default FormHook;
+```
+
+**App.js**
+
+```
+import React from 'react';
+import FormHook from './components/FormHook'
+
+function App() {
+  return (
+    <div>
+      <FormHook/>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+Para empezar se va a generar un input y un boton de una forma sencilla en el archivo **FoormHook.js**, aprovechando que ya esta instalado el cdn de Bootstrap y generar unas clases para presentar visualmente el componente de una forma mas agradable
+
+```
+import React, {Fragment} from 'react'
+
+const FormHook = () => {
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+            <form>
+                <input
+                name="titulo"
+                className="form-control my-2"
+                />
+                <button className="btn btn-primary" >Enviar</button>
+            </form>
+        </Fragment> 
+     );
+}
+ 
+export default FormHook;
+```
+
+al ejecutar npm start esto es lo que se debe ver en el navegador
+
+![assets-git/44.png](assets-git/44.png)
+
+Lo primero que se debe tener en cuenta para hacer uso de la libreria que proporciona los Hook Form es que se debe importar al componente `import {useForm} from 'react-hook-form'`, esta libreria servira para realizar valicaciones y va hacer uso de un registro, un error y la funcion que sera handleSubmit `const {register, errors, handleSubmit} = useForm();`
+
+```
+import React, {Fragment} from 'react'
+
+import {useForm} from 'react-hook-form'
+
+
+
+const FormHook = () => {
+    const {register, errors, handleSubmit} = useForm();
+    
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+            <form>
+                <input
+                name="titulo"
+                className="form-control my-2"
+                />
+                <button className="btn btn-primary" >Enviar</button>
+            </form>
+        </Fragment> 
+     );
+}
+ 
+export default FormHook;
+```
+
+La forma en que trabaja la funcion handleSubmit para hacer las validaciones es que se debe generar dentro de la etiqueta form un onSubmit que contenga a la funcion handleSubmit y que este nuevamenta haga uso de la funcion onSubmit `<form onSubmit={handleSubmit(onSubmit)}>`, nuevamente como en el capitulo anterior es muy importante tener el atributo name dentro de un input y por esta razon anteriormente ya se coloco este atributo name con el nombre de titulo.
+
+Al realizar esto antes del return se puede crear una funcion onSubmit pasando como parametro data y luego hacer un console.log para ver que esta recibiendo la data
+
+```
+import React, {Fragment} from 'react'
+
+import {useForm} from 'react-hook-form'
+
+
+
+const FormHook = () => {
+    const {register, errors, handleSubmit} = useForm();
+
+    const onSubmit = (data) => {
+        console.log(data)
+    }
+
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <input
+                name="titulo"
+                className="form-control my-2"
+                />
+                <button className="btn btn-primary" >Enviar</button>
+            </form>
+        </Fragment> 
+     );
+}
+ 
+export default FormHook;
+```
+
+Ademas de esto dentro de los atributos se puede llamar a register para hacer todas las validaciones necesarias utilizandolo de esta forma
+
+`ref = {register}`
+
+en el register se pasa un objeto que reciba varios parametros como por ejemplo que el campo sea requerido utilizando `required: {value:true}` y tambien desplegar un mensaje de error sobre el campo si el usuario no pasa un valor de titulo, de esta forma queda asi 
+
+```
+ref={
+    register({
+        required: {value: true, message: 'Titulo obligatorio'}
+    })
+}
+```
+
+El archivo queda de esta forma
+
+```
+import React, {Fragment} from 'react'
+
+import {useForm} from 'react-hook-form'
+
+
+
+const FormHook = () => {
+    const {register, errors, handleSubmit} = useForm();
+
+    const onSubmit = (data) => {
+        console.log(data)
+    }
+
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <input
+                name="titulo"
+                className="form-control my-2"
+                ref={
+                    register({
+                        required: {value: true, message: 'Titulo obligatorio'}
+                    })
+                }
+                />
+                <button className="btn btn-primary" >Enviar</button>
+            </form>
+        </Fragment> 
+     );
+}
+ 
+export default FormHook;
+```
+
+En el navegador se debe abrir la consola para observar que esta pasando, si se pasa al campo del titulo por ejemplo un nombre o cualquier palabra al hacer click al boton enviar, van a aparecer todos los datos que estamos pasando, esta es la importancia de las validaciones y el uso de los atributos como `name` y `ref`, se pueden pasar mas validaciones aqui una documentacion practica de [Bluuweb](https://bluuweb.github.io/react-udemy/04-formularios/#react-hook-form) para hacer uso de esta libreria
+
+![assets-git/43.png](assets-git/43.png)
+
+Para desplegar los errores se puede hacer uso de la etiqueta span con una clase bootstrap y hay 2 formas de hacer que esto se presente. usando Vanilla JavaScript o mediante los [Optional Chaining](https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Operadores/Encadenamiento_opcional).
+
+con esta expresion `{errors?.titulo?.message}` lo que se esta preguntando es. Existen errores (si/no), existen errores en el campo del titulo (si/no). si existe un error despliegue el mensaje que se registro con required
+
+```
+<span className="text-danger text-small d-block mb-2">
+    {errors?.titulo?.message}
+</span>
+```
+
+y el span se puede agregar debajo del input para desplegar el mensaje de error quedando de la siguiente forma
+
+```
+import React, {Fragment} from 'react'
+
+import {useForm} from 'react-hook-form'
+
+
+
+const FormHook = () => {
+    const {register, errors, handleSubmit} = useForm();
+
+    const onSubmit = (data) => {
+        console.log(data)
+    }
+
+    return ( 
+        <Fragment>
+            <h1>Formulario</h1>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <input
+                name="titulo"
+                className="form-control my-2"
+                ref={
+                    register({
+                        required: {value: true, message: 'Titulo obligatorio'}
+                    })
+                }
+                />
+                <span className="text-danger text-small d-block mb-2">
+                    {errors?.titulo?.message}
+                </span>
+                <button className="btn btn-primary" >Enviar</button>
+            </form>
+        </Fragment> 
+     );
+}
+ 
+export default FormHook;
+```
+
+Si a continuacion se abre el navegador y se da clic sobre el boton enviar nada va a aparecer el mensaje de error
+
+![assets-git/45.png](assets-git/45.png)
+
+Si existieran mas etiquetas input, tambien habria que agregar las respectivas validaciones para que al dar clic sobre el boton enviar tome toda la data.
+
+Existe una propiedad adicional que sirve para limpiar los campos de los formularios es decir, actualmente se inserta una palabra sobre el campo pero no se limpia el formulario, toca borrar la palabra para insertar otra.
+
+En la constante onSubmit se puede agregar un evento que permite realizarlo y asi es como se utiliza
+
+```
+const onSubmit = (data, e) => {
+        console.log(data)
+        e.target.reset()
+    }
+```
+
+De tal forma que agregando esta nueva propiedad al codigo nuevamente en el navegador se inserta una palabra, se envia y se limpian los campos del formulario
+
+![assets-git/46.png](assets-git/46.png)
+
+Como se puede observar las palabras las recibio la consola pero no se quedaron sobre el campo para escribir
