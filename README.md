@@ -10,7 +10,7 @@
 
 [React Hook Form](#React-Hook-Form)
 
-[]()
+[Práctica #1](#Práctica-#1)
 
 []()
 
@@ -1445,3 +1445,374 @@ De tal forma que agregando esta nueva propiedad al codigo nuevamente en el naveg
 ![assets-git/46.png](assets-git/46.png)
 
 Como se puede observar las palabras las recibio la consola pero no se quedaron sobre el campo para escribir
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## Práctica #1
+
+Crear un nuevo componente que se llame **EjemploUno.js** con la estructura basica en el proyecto del curso.
+
+Probar en el Return usando la etiqueta `Fragment` para ver si el editor lo importa solo y utilizar una etiqueta h1 que lleve por titulo Ejemplo 1
+
+```
+import React, { Fragment } from 'react'
+
+const EjemploUno = () => {
+    return ( 
+        <Fragment>
+            <h1>Ejemplo 1</h1>
+        </Fragment>
+     );
+}
+ 
+export default EjemploUno;
+```
+
+Dirigir a **App.js** e importar el componente sin los temas de los capitulos anteriores
+
+```
+import React from 'react';
+import EjemploUno from './components/EjemploUno'
+
+function App() {
+  return (
+    <div>
+      <EjemploUno/>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+Verificar que este ejecutando en el navegador
+
+![assets-git/47.png](assets-git/47.png)
+
+Nuevamente se va a hacer uso de la libreria `useForm` vista en el capitulo anterior, por tanto se deben dejar las configuraciones iniciales en el componente **EjemploUno.js*, adicional se van a crear dos campos para formulario, el primero va a ser Titulo con un placeholde que dice Ingrese título, el segundo campo Descripcion y el placeholder Ingrese descripción con un boton que diga Agregar, cada uno de estos lleva clases de Bootstrap.
+
+```
+import React, { Fragment } from 'react'
+import {useForm} from 'react-hook-form'
+
+const EjemploUno = () => {
+
+    const {register, errors, handleSubmit} = useForm();
+
+    return ( 
+        <Fragment>
+            <h1>Ejemplo 1</h1>
+            <form>
+                <input
+                name="Titulo"
+                placeholder="Ingrese título"
+                className="form-control my-2"     
+                >
+                </input>
+                <input
+                name="Titulo"
+                placeholder="Ingrese título"
+                className="form-control my-2"     
+                >
+                </input>
+                <button className="btn btn-primary">Agregar</button>
+            </form>
+        </Fragment>
+     );
+}
+ 
+export default EjemploUno;
+```
+
+Agregando clases Bootstrap se debe ver de la siguiente forma en el navegador
+
+![assets-git/48.png](assets-git/48.png)
+
+Recordando que `onSubmit` se debe agregar a la etiqueta `Form` llamarla con la funcion `handleSubmit` y pasar como parametro la funcion `onSubmit`.
+
+Utilzar el atributo `ref` para hacer uso de `register` agregando las validaciones con la diferencia que se va agregar la validacion de ingreso de por lo menos 10 caracteres o letras con `minLenght` en el campo de Titulo.
+
+Agregar errors para desplegar la validacion del mensaje. 
+
+En este capitulo se hace la validacion de otra forma
+
+```
+{
+    errors.titulo && 
+    <span className="text-danger text-small d-block mb-2">
+    {errors.titulo.message}
+    </span>
+}
+``` 
+
+Si el campo del titulo se encuentra vacio o inconpleto va a desplegar el mensaje de error
+
+Recordar tambien que se debe crear la constante y pasar la data y el evento. Probar con un console.log para verificar que todo se este ejecutando de manera correcta
+
+hasta el momento lo unico distinto del capitulo pasado es que se agrego una validacion mas y la forma de desplegar el error cambio.
+
+```
+import React, { Fragment } from 'react'
+import {useForm} from 'react-hook-form'
+
+const EjemploUno = () => {
+
+    const {register, errors, handleSubmit} = useForm();
+
+    const onSubmit = (data, e) => {
+        console.log(data)
+        e.target.reset()
+    }
+    
+
+    return ( 
+        <Fragment>
+            <h1>Ejemplo 1</h1>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <input
+                name="titulo"
+                placeholder="Ingrese título"
+                className="form-control my-2"    
+                ref ={
+                    register({
+                        required: {value:true, message: 'Campo obligatorio'},
+                        minLength: {value:10, message: 'Mínimo 10 caracteres'}
+                    }) 
+                } 
+                >
+                </input>
+                {
+                    errors.titulo && 
+                    <span className="text-danger text-small d-block mb-2">
+                    {errors.titulo.message}
+                    </span>
+                }
+                <input
+                name="descripcion"
+                placeholder="Ingrese descripción"
+                className="form-control my-2"
+                ref ={
+                    register({
+                        required: {value:true, message: 'Campo obligatorio'},
+                    }) 
+                }      
+                >
+                    
+                </input>
+                {
+                    errors.descripcion &&
+                    <span className="text-danger text-small d-block mb-2">
+                    {errors.descripcion.message}
+                    </span>
+                }
+                <button className="btn btn-primary">Agregar</button>
+            </form>
+        </Fragment>
+     );
+}
+ 
+export default EjemploUno;
+```
+
+Al visualizar en el navegador se hace la primer validacion con los campos vacios y dando clic sobre el boton enviar
+
+![assets-git/49.png](assets-git/49.png)
+
+la segunda validacion es agregando menos de 10 caracteres sobre el primer campo y dejar vacio el segundo
+
+![assets-git/50.png](assets-git/50.png)
+
+la tercer validacion es agregar mas de 10 caracteres sobre el primer campo y dejar vacio el segundo
+
+![assets-git/51.png](assets-git/51.png)
+
+la ultima validacion es completando los datos correctamente, ingresarlos y ver como los recibe la consola 
+
+![assets-git/52.png](assets-git/52.png)
+
+A continuacion en el componente se va a crear un nuevo useState donde el estado sera entradas y su modificador sera setEntradas y se va a inicializar con un array vacio `const [entradas, setEntradas] = useState([])`
+
+el modificador se va a utilizar para registrar las entradas e irlas guardando en el array. Para esto en la funcion onSubmit se debe llamar al modificador, iniciar como un array, utilizar el operador de propagacion con el estado y seguido de esto la data para ir guardando el titulo y la descripcion en el array
+
+```
+    const onSubmit = (data, e) => {
+        console.log(data)
+        e.target.reset()
+        setEntradas([
+            ...entradas,
+            data
+        ])
+    }
+```
+
+```
+import React, { Fragment, useState } from 'react'
+import {useForm} from 'react-hook-form'
+
+const EjemploUno = () => {
+
+    const {register, errors, handleSubmit} = useForm();
+    
+    const [entradas, setEntradas] = useState([])
+
+    const onSubmit = (data, e) => {
+        console.log(data)
+        e.target.reset()
+        setEntradas([
+            ...entradas,
+            data
+        ])
+    }
+    
+
+    return ( 
+        <Fragment>
+            <h1>Ejemplo 1</h1>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <input
+                name="titulo"
+                placeholder="Ingrese título"
+                className="form-control my-2"    
+                ref ={
+                    register({
+                        required: {value:true, message: 'Campo obligatorio'},
+                        minLength: {value:10, message: 'Mínimo 10 caracteres'}
+                    }) 
+                } 
+                >
+                </input>
+                {
+                    errors.titulo && 
+                    <span className="text-danger text-small d-block mb-2">
+                    {errors.titulo.message}
+                    </span>
+                }
+                <input
+                name="descripcion"
+                placeholder="Ingrese descripción"
+                className="form-control my-2"
+                ref ={
+                    register({
+                        required: {value:true, message: 'Campo obligatorio'},
+                    }) 
+                }      
+                >
+                    
+                </input>
+                {
+                    errors.descripcion &&
+                    <span className="text-danger text-small d-block mb-2">
+                    {errors.descripcion.message}
+                    </span>
+                }
+                <button className="btn btn-primary">Agregar</button>
+            </form>
+        </Fragment>
+     );
+}
+ 
+export default EjemploUno;
+```
+
+En el navegador abrir la pestaña de componentes e ingresar datos al formulario creado en la parte de abajo de los componentes se puede verificar cada ingreso que se realice y ver como lo guardar en el array de entradas.
+
+![assets-git/53.png](assets-git/53.png)
+
+Ahora para desplegar estos datos sobre el contenido de la pagina vamos utilizar la etiqueta ul despues del cierre del formulario,
+luego se va a hacer un recorrido por el array con el metodo map y dentro de los corchetes se llama a cada item y luego se retorna el item con la propiedad que es el name que se le dio a cada input los cuales son titulo y descripcion de esta forma
+
+```
+<ul>
+    {
+        entradas.map(item=> 
+            <li>{ item.titulo } - {item.descripcion}</li>)
+    }
+</ul>
+```
+
+```
+import React, { Fragment, useState } from 'react'
+import {useForm} from 'react-hook-form'
+
+const EjemploUno = () => {
+
+    const {register, errors, handleSubmit} = useForm();
+    
+    const [entradas, setEntradas] = useState([])
+
+    const onSubmit = (data, e) => {
+        console.log(data)
+        e.target.reset()
+        setEntradas([
+            ...entradas,
+            data
+        ])
+    }
+    
+
+    return ( 
+        <Fragment>
+            <h1>Ejemplo 1</h1>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <input
+                name="titulo"
+                placeholder="Ingrese título"
+                className="form-control my-2"    
+                ref ={
+                    register({
+                        required: {value:true, message: 'Campo obligatorio'},
+                        minLength: {value:10, message: 'Mínimo 10 caracteres'}
+                    }) 
+                } 
+                >
+                </input>
+                {
+                    errors.titulo && 
+                    <span className="text-danger text-small d-block mb-2">
+                    {errors.titulo.message}
+                    </span>
+                }
+                <input
+                name="descripcion"
+                placeholder="Ingrese descripción"
+                className="form-control my-2"
+                ref ={
+                    register({
+                        required: {value:true, message: 'Campo obligatorio'},
+                    }) 
+                }      
+                >
+                    
+                </input>
+                {
+                    errors.descripcion &&
+                    <span className="text-danger text-small d-block mb-2">
+                    {errors.descripcion.message}
+                    </span>
+                }
+                <button className="btn btn-primary">Agregar</button>
+            </form>
+            <ul>
+                {
+                    entradas.map(item=> 
+                        <li>{ item.titulo } - {item.descripcion}</li>)
+                }
+            </ul>
+        </Fragment>
+     );
+}
+ 
+export default EjemploUno;
+```
+
+En el navegador nuevamente escribir sobre cada campo del formulario y ver como se empieza a imprimir debajo del formulario
+
+![assets-git/54.png](assets-git/54.png)
+
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
