@@ -12,7 +12,7 @@
 
 [Práctica #1](#Práctica-#1)
 
-[]()
+[Props en Componentes](#Props-en-Componentes)
 
 []()
 
@@ -1812,6 +1812,337 @@ En el navegador nuevamente escribir sobre cada campo del formulario y ver como s
 
 ![assets-git/54.png](assets-git/54.png)
 
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## Props en Componentes
+
+Los componentes son como las funciones en JavaScript y estos aceptan entradas arbitrarias a las cuales se les llama **props** y devuelven a React elementos que describen lo que debe aparecer en pantalla.
+
+Para este ejemplo crear el Componente Saludo con la estructura basica pero en formato **.jsx**, este se utiliza de la misma forma que con extension **.js**, pero tiene mas facilidades una de ellas es por ejemplo que en **.js** hay que escribir una etiqueta html desde su apertura que esta `<>`, en cambio en **.jsx** si escribe `h2` y se presiona tab trae la etiqueta de apertura y cierre.
+
+A continuacion crear el componente **Saludo.jsx**
+
+```
+import React, { Fragment } from 'react';
+
+const Saludo = () => {
+    return ( 
+        <Fragment>
+            <h2>Hola! pepito</h2>
+        </Fragment>
+
+     );
+}
+ 
+export default Saludo;
+
+```
+
+y a continuacion usarla importarla en **App.js** y ejecutar con `npm start`
+
+```
+import React from 'react';
+import Saludo from './components/Saludo'
+
+function App() {
+  return (
+    <div>
+      <Saludo/>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+Cuando se lance la aplicacion el navegador abrir los componentes y fijarse que en el lado derecho hay una parte donde dice props
+
+![assets-git/55.png](assets-git/55.png)
+
+En este momento esta apareciendo un componente con un campo estatico el cual es pepito, si se añade un **props** que es lo que se va a hacer a continuacion en el archivo **App.js** se añaden props. La idea de utilizar componentes es que se puedan reutilizar por esto se va a duplicar el componente de Saludo añadiendo props y añadir props no es mas que agregar una variable seguido del componente. En este caso se va a utilizar a props **persona**
+
+```
+import React from 'react';
+import Saludo from './components/Saludo'
+
+function App() {
+  return (
+    <div>
+      <Saludo persona ="Ignacio" />
+      <Saludo persona ="Jeyfred" />
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+En el navegador se envian dos componentes con la palabra estatica pero si se observa sobre el prop de cada componente ya esta recibiendo cada dato en cada componente
+
+Por un lado recibe a Ignacio
+
+![assets-git/56.png](assets-git/56.png)
+
+Por otro lado recibe a jeyfred
+
+![assets-git/57.png](assets-git/57.png)
+
+y si ahora dentro del componente **Saludo.jsx** se manda como parametro del arrow function a props y luego se hace un console.log, estos datos ya van a aparecer en la consola del navegador
+
+```
+import React, { Fragment } from 'react';
+
+const Saludo = (props) => {
+    console.log(props)
+    return ( 
+        <Fragment>
+            <h2>Hola! pepito</h2>
+        </Fragment>
+
+     );
+}
+ 
+export default Saludo;
+
+```
+
+![assets-git/58.png](assets-git/58.png)
+
+y ahora para hacer que el componente sea dinamico se debe llamar a props con el objeto entre llaves, es decir `{props.persona}`
+
+```
+import React, { Fragment } from 'react';
+
+const Saludo = (props) => {
+    console.log(props)
+    return ( 
+        <Fragment>
+            <h2>Hola! {props.persona}</h2>
+        </Fragment>
+
+     );
+}
+ 
+export default Saludo;
+
+```
+
+y a continuacion se obtiene el componente dinamico en el navegador
+
+![assets-git/59.png](assets-git/59.png)
+
+Anteriormente al objeto persona se le envio un string, si se quiere pasar otro tipo de dato como un booleano o un numero se debe pasar entre corchetes `{}`, por ejemplo a continuacion se va a pasar la edad a cada objeto en **App.js**
+
+```
+import React from 'react';
+import Saludo from './components/Saludo'
+
+function App() {
+  return (
+    <div>
+      <Saludo persona ="Ignacio" edad={30} />
+      <Saludo persona ="Jeyfred" edad={26}/>
+    </div>
+  );
+}
+
+export default App;
+```
+
+y si se quiere ver en el navegador se modifica **Saludo.jsx**
+
+```
+import React, { Fragment } from 'react';
+
+const Saludo = (props) => {
+    console.log(props)
+    return ( 
+        <Fragment>
+            <h2>Hola! {props.persona}</h2>
+            <h3>Tengo {props.edad} años</h3>
+            <br/>
+        </Fragment>
+
+     );
+}
+ 
+export default Saludo;
+
+```
+
+![assets-git/61.png](assets-git/61.png)
+
+Ahora se va a utilizar otro componente el cual se llamara **Comentario.jsx**, al cual se le van a llamar clases de Bootstrap para renderizar y hacer que parezca un comentario de la seccion de alguna aplicacion de redes sociales. Pueden hacer click sobre este [enlace](https://getbootstrap.com/docs/4.0/layout/media-object/) donde se especifica el contenedor para usarlo como seccion de comentarios.
+
+```
+import React, { Fragment } from 'react';
+
+const Comentario = () => {
+    return ( 
+        <Fragment>
+            <h1>Comentarios</h1>
+            <hr className="bg-light"/>
+            <div className="media">
+              <img className="mr-3" src="https://via.placeholder.com/64" alt="Generic placeholder image"/>
+              <div className="media-body inline-flex">
+                <h5 className="mt-0">Camilo</h5>
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+              </div>
+            </div>
+        </Fragment>
+     );
+}
+ 
+export default Comentario;
+```
+
+Ahora se debe importar a **App.js** debajo de `<Saludo/>`
+
+```
+import React from 'react';
+import Saludo from './components/Saludo'
+import Comentario from './components/Comentario'
+
+function App() {
+  return (
+    <div className="container mt-2">
+      <Saludo persona ="Ignacio" edad={30} />
+      <Saludo persona ="Jeyfred" edad={26} />
+      <Comentario />
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+Y se obtiene el siguiente resultado 
+
+![assets-git/60.png](assets-git/60.png)
+
+pero para hacer mas dinamico el contenido entonces ahora en el archivo **Apps.js** se crea una constante antes del `return` llamada sujeto, la cual va a recibir los datos estaticos que anteriormente estaban en **Comentario.jsx** y en el llamdo del componente se debe llamar a la constante y pasar dentro de los corchetes a la constante que ahora se conviernte en un props
+
+```
+  const sujeto = {
+    nombre: 'Camilo',
+    urlImagen: 'https://via.placeholder.com/64',
+    texto: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit.',
+  }
+```
+
+```
+import React from 'react';
+import Saludo from './components/Saludo'
+import Comentario from './components/Comentario'
+
+function App() {
+
+  const sujeto = {
+    nombre: 'Camilo',
+    urlImagen: 'https://via.placeholder.com/64',
+    texto: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit.',
+  }
+
+  return (
+    <div className="container mt-2">
+      <Saludo persona ="Ignacio" edad={30} />
+      <Saludo persona ="Jeyfred" edad={26} />
+      <Comentario sujeto={sujeto}/>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+Ahora cambio un poco el modo de uso, se debe llamar al props en el arrow Function de **Comentario.jsx** y llamar a las propiedades que fueron creadas con la constante `sujeto`
+
+- **sujeto.nombre**
+
+- **sujeto.urlImagen**
+
+- **sujeto.texto**
+
+```
+import React, { Fragment } from 'react';
+
+const Comentario = ({sujeto}) => {
+    return ( 
+        <Fragment>
+            <h1>Comentarios</h1>
+            <hr className="bg-light"/>
+            <div className="media">
+              <img className="mr-3" src={sujeto.urlImagen} alt="Generic placeholder image"/>
+              <div className="media-body inline-flex">
+                <h5 className="mt-0">{sujeto.nombre}</h5>
+                {sujeto.texto}
+              </div>
+            </div>
+        </Fragment>
+     );
+}
+ 
+export default Comentario;
+```
+
+Por el momento se sigue teniendo el mismo render al llamarlo con las propiedades pero a traves de un props
+
+![assets-git/62.png](assets-git/62.png)
+
+y si se desea dividir mas el componente como por ejemplo el que trae la url de la imagen tambien se puede hacer.
+
+Para esto se crea un componente mas el cual se llame **Avatar.jsx** y en este componente se trae la imagen a traves de props
+
+```
+import React, {Fragment} from 'react';
+
+const Avatar = ({urlImagen}) => {
+    return ( 
+        <Fragment>
+          <img className="mr-3" src={urlImagen} alt="Generic placeholder image"/>
+        </Fragment>
+    );
+}
+ 
+export default Avatar;
+```
+
+y Para llamarlo nuevamente al archivo de **Comentario.jsx** se debe importar asi `import Avatar from './Avatar'` y añadirlo al return con el props `<Avatar urlImagen={sujeto.urlImagen} />`.
+
+```
+import React, { Fragment } from 'react';
+import Avatar from './Avatar'
+
+const Comentario = ({sujeto}) => {
+    return ( 
+        <Fragment>
+            <h1>Comentarios</h1>
+            <hr className="bg-light"/>
+            <div className="media">
+              {/* <img className="mr-3" src={sujeto.urlImagen} alt="Generic placeholder image"/> */}
+              <Avatar urlImagen={sujeto.urlImagen} />
+              <div className="media-body inline-flex">
+                <h5 className="mt-0">{sujeto.nombre}</h5>
+                {sujeto.texto}
+              </div>
+            </div>
+        </Fragment>
+     );
+}
+ 
+export default Comentario;
+```
+
+De esta Forma el componente Comentario llama otro componente que se llama Avatar con props
+
+![assets-git/63.png](assets-git/63.png)
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
