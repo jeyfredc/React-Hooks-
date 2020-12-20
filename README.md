@@ -10,11 +10,11 @@
 
 [React Hook Form](#React-Hook-Form)
 
-[Práctica #1](#Práctica-#1)
+[Práctica #1](#Práctica-1)
 
 [Props en Componentes](#Props-en-Componentes)
 
-[]()
+[Aplicación CRUD](#Aplicación-CRUD)
 
 []()
 
@@ -2143,6 +2143,765 @@ export default Comentario;
 De esta Forma el componente Comentario llama otro componente que se llama Avatar con props
 
 ![assets-git/63.png](assets-git/63.png)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## Aplicación CRUD
+
+A continuacion se va a crear una aplicacion a la cual se le denomina CRUD(Create, Read, Update, Delete), es la aplicacion que crea, lee, actualiza y borra tareas, generalmente se hacen paginas sencillas para actualizar tareas.
+
+En la terminal ubicarse en la carpeta que esta antes de **my-app** porque se va a crear una nueva aplicacion.
+
+Ejecutar `npx create-react-app crud`
+
+![assets-git/64.png](assets-git/64.png)
+
+A continuacion se va a realizar la instalacion de la libreria de react-hook-form, para esto se debe acceder a la carpeta a traves de la terminaly ejecutar `npm install react-hook-form`
+
+![assets-git/65.png](assets-git/65.png)
+
+En la terminal ejecutar tambien `npm install uuid`, esta dependencia ayuda a crear id's aleatorios [uuid](https://github.com/uuidjs/uuid)
+
+A continuacion en la terminal ejecutar `code .` para abrir el editor de codigo en la carpeta del proyecto, abrir **src** y empezar a eliminar los archivos que no se van a utilizar los cuales son **App.css**, **logo.svg**, **App.test.js**, **reportWebVitals.js** y **setupTests.js**
+
+El archivo **index.js** dejarlo con la siguiente extructura porque no se esta utilizando reportWebVitals
+
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+
+```
+
+A continuacion el archivo **App.js** modificarlo con un `<h1>Hola Mundo<h1/>` para probar que este funcionando y tambien quitar el resto de estructura con la que viene instalado el archivo
+
+```
+import React from 'react'
+
+function App() {
+  return (
+    <h1>Hola Mundo!</h1>
+  );
+}
+
+export default App;
+
+```
+
+y ahora ejecutar en la terminal
+
+`npm start`
+
+verificar que salga el mensaje
+
+![assets-git/66.png](assets-git/66.png)
+
+Como ya esta funcionando en este capitulo se va a hacer uso de estilos css personalizados, para esto copiar todo el css que se encuentre en el siguiente [enlace](http://taniarascia.github.io/primitive/css/main.css) y reemplazarlo en el **index.css** del proyecto. Con el comando **ctrl + a** se selecciona todo.
+
+Dentro de **App.js** copiar lo siguiente, lo cual corresponde a maquetacion que se usa con los estilos de css
+
+```
+import React from 'react'
+
+function App() {
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          <h2>Add User</h2>
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+La pagina se debe ver como esta imagen
+
+![assets-git/67.png](assets-git/67.png)
+
+A continuacion se va a realizar la configuracion de la vista de usuarios para esto en la carpeta **src** se debe crear una subcarpeta llamada **components** y dentro de esta crear un archivo que se llame **UserTable.jsx** y crear la estructura basica de todo archivo con los comando `imr` y `sfc`
+
+```
+import React from 'react';
+
+const userTable = () => {
+    return (  );
+}
+ 
+export default userTable;
+```
+
+Dentro del `return` agregar el siguiente codigo, el cual representa una tabla
+
+```
+import React from 'react';
+
+const userTable = () => {
+    return ( 
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Name data</td>
+                    <td>username data</td>
+                    <td>
+                        <button className="button nuted-butoton">Edit</button>
+                        <button className="button nuted-butoton">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+     );
+}
+ 
+export default userTable;
+```
+
+Ahora importarlo a **App.js**
+
+```
+import React from 'react'
+import UserTable from './components/UserTable'
+
+function App() {
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          <h2>Add User</h2>
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable/>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+De esta forma la vista se esta presentando asi 
+
+![assets-git/68.png](assets-git/68.png)
+
+Dentro del archivo **App.js** se va a crear un constante la cual recibe un array con datos de id, name y userName
+
+```
+  const usersData = [
+    {id: 1, name: 'Juan', unsername: 'Juanc10' },
+    {id: 2, name: 'Camilo', unsername: 'Camilo20' },
+    {id: 3, name: 'Michael', unsername: 'Michael5' },
+  ]
+```
+
+A continuacion de esta constante se crea el estado el cual se llamara users y el modificador setUsers. Este estado se va a inicializar con la constante anterior usersData
+
+`const [users, setusers] = useState(usersData)`
+
+```
+import React, {useState} from 'react'
+import UserTable from './components/UserTable'
+
+function App() {
+
+  const usersData = [
+    {id: 1, name: 'Juan', unsername: 'Juanc10' },
+    {id: 2, name: 'Camilo', unsername: 'Camilo20' },
+    {id: 3, name: 'Michael', unsername: 'Michael5' },
+  ]
+
+    //State
+    
+  const [users, setUsers] = useState[usersData]
+
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          <h2>Add User</h2>
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable/>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+por el momento si se guarda y se abren los componentes del navegador en la parte derecha debe estar apareciendo el estado
+
+![assets-git/69.png](assets-git/69.png)
+
+Como es estado es quien tiene la informacion de los usuarios se puede pasar como props de UserTable, muy parecido como se hizo en el capitulo anterior
+
+`<UserTable users={users}/>`
+
+Al pasar estos como props, ya se van a ver los usuarios en los props que muestra la pestaña componentes en el navegador
+
+![assets-git/70.png](assets-git/70.png)
+
+De esta forma si se pasamos al archivo **userTable.jsx** y se pasar en los parametros del Arrow Function de UserTable y dentro de este se llama a traves de un console.log a los props tambien se puede ver en la consola del navegador
+
+```
+import React from 'react';
+
+const userTable = (props) => {
+
+    console.log(props.users)
+    return ( 
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Name data</td>
+                    <td>username data</td>
+                    <td>
+                        <button className="button nuted-butoton">Edit</button>
+                        <button className="button nuted-butoton">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+     );
+}
+ 
+export default userTable;
+```
+
+![assets-git/71.png](assets-git/71.png)
+
+teniendo esa informacion ya se puede iterar sobre todo el contenido de la estructura html y llamar cada uno a traves de las propiedades las cuales son 
+
+- users.id
+
+- users.name
+
+- users.username
+
+pero antes de esto se debe importar la libreria de uuid en el archivo **App.js** asi `import {v4 as uuid4} from 'uuid'` y para generar un id diferente a los estaticos que venian por defecto se reemplaza `uuidv4()` en cada uno de los id que antes estaban
+
+```
+import React, {useState} from 'react'
+import UserTable from './components/UserTable'
+import {v4 as uuidv4} from 'uuid'
+
+function App() {
+
+  const usersData = [
+    {id: uuidv4(), name: 'Juan', unsername: 'Juanc10' },
+    {id: uuidv4(), name: 'Camilo', unsername: 'Camilo20' },
+    {id: uuidv4(), name: 'Michael', unsername: 'Michael5' },
+  ]
+
+    //State
+
+  const [users, setUsers] = useState(usersData)
+
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          <h2>Add User</h2>
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable users={users} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+Dentro de la etiqueta `tbody` del archivo **UserTable.jsx** se va a usar el metodo map para hacer el recorrido del array de users con cada una de las propiedades
+
+```
+            <tbody>
+                {
+                    props.users.map(user => (
+
+                        <tr key= {user.id}>
+                            <td>Name data</td>
+                            <td>username data</td>
+                            <td>
+                                <button className="button muted-button">Edit</button>
+                                <button className="button muted-button">Delete</button>
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+```
+
+```
+import React from 'react';
+
+const userTable = (props) => {
+
+    console.log(props.users)
+    return ( 
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    props.users.map(user => (
+
+                        <tr key= {user.id}>
+                            <td>{user.name}</td>
+                            <td>{user.username}</td>
+                            <td>
+                                <button className="button muted-button">Edit</button>
+                                <button className="button muted-button">Delete</button>
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+     );
+}
+ 
+export default userTable;
+```
+
+Como son 3 objetos, se actualizan 3 objetos en el navegador y tambien se puede observar que el id que se esta generando es dinamico gracias a que importo la libreria `uuid`
+
+![assets-git/72.png](assets-git/72.png)
+
+A continuacion se agrega una validacion que se lee de la siguiente forma.
+
+```
+            <tbody>
+                {
+                    props.users.length > 0 ? (
+                    props.users.map(user => (
+
+                        <tr key= {user.id}>
+                            <td>{user.name}</td>
+                            <td>{user.username}</td>
+                            <td>
+                                <button className="button muted-button">Edit</button>
+                                <button className="button muted-button">Delete</button>
+                            </td>
+                        </tr>
+                    )
+                )) : (
+                    <tr>
+                  <td colSpan={3}> No users</td>
+                  </tr>  
+                )
+                }
+            </tbody>
+```
+
+El anterior es un if ternario que valida que si los usuarios son mayores a 0 agrega los estilos de la imagen anterior , pero si no existe ningun usuario imprima que no hay usuarios 
+
+Para probar que este funcionando comentar por un momento en el archivo **App.js** la informacion que tiene la constante `userData`
+
+```
+  const usersData = [
+    // {id: uuidv4(), name: 'Juan', unsername: 'Juanc10' },
+    // {id: uuidv4(), name: 'Camilo', unsername: 'Camilo20' },
+    // {id: uuidv4(), name: 'Michael', unsername: 'Michael5' },
+  ]
+```
+
+![assets-git/73.png](assets-git/73.png)
+
+una vez se haya revisado que esta funcionando el if ternario descomentar las lineas de codigo.
+
+Ahora se va a realizar la funcion para crear usuarios para esto se debe crear una constante que recibe un arrow function, como parametro recibe un usuario y retorna un usuario con un id y el modificador hace una copiar de los usuarios y luego agrega al usuario
+
+```
+  // Agregar Usuarios
+  const addUser = (user) => {
+    user.id = uuidv4()
+    setUsers([
+      ...users,
+      user
+    ])
+  }
+```
+```
+import React, {useState} from 'react'
+import UserTable from './components/UserTable'
+import {v4 as uuidv4} from 'uuid'
+
+function App() {
+
+  const usersData = [
+    {id: uuidv4(), name: 'Juan', unsername: 'Juanc10' },
+    {id: uuidv4(), name: 'Camilo', unsername: 'Camilo20' },
+    {id: uuidv4(), name: 'Michael', unsername: 'Michael5' },
+  ]
+
+    //State
+
+  const [users, setUsers] = useState(usersData)
+
+  // Agregar Usuarios
+  const addUser = (user) => {
+    user.id = uuidv4()
+    setUsers([
+      ...users,
+      user
+    ])
+  }
+
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          <h2>Add User</h2>
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable UserTable users={users} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+Al agregar un usuario, este se  va a crear con su nombre y nombre de usuario. Para traer esta informacion se crea un nuevo componente que se va a llamar **AddUserForm.jsx** y se escribe dentro de este con una etiqueta h1 Formulario
+
+```
+import React, {useState} from 'react'
+import UserTable from './components/UserTable'
+import {v4 as uuidv4} from 'uuid'
+import AddUserForm from './components/AddUserForm'
+
+function App() {
+
+  const usersData = [
+    {id: uuidv4(), name: 'Juan', unsername: 'Juanc10' },
+    {id: uuidv4(), name: 'Camilo', unsername: 'Camilo20' },
+    {id: uuidv4(), name: 'Michael', unsername: 'Michael5' },
+  ]
+
+    //State
+
+  const [users, setUsers] = useState(usersData)
+
+  // Agregar Usuarios
+  const addUser = (user) => {
+    user.id = uuidv4()
+    setUsers([
+      ...users,
+      user
+    ])
+  }
+
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          <h2>Add User</h2>
+          <AddUserForm/>
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable UserTable users={users} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+![assets-git/74.png](assets-git/74.png)
+
+Ahora estos campos se van a pasar al return del componente AddUserForm 
+
+```
+import React from 'react';
+
+const AdduserForm = (props) => {
+    return ( 
+        <form>
+            <label>Name</label>
+            <input type="text" name="name" />
+            <label>Username</label>
+            <input type="text" name="username" />
+            <button>Add new user</button>
+        </form>
+     );
+}
+ 
+export default AdduserForm;
+```
+
+![assets-git/75.png](assets-git/75.png)
+
+y ahora dentro de este componente como se habia visto anteriormente se va a realizar los React Hook Form.
+
+a continuacion se debe importar `import {useForm} from 'react-hook-form'` y hacer el uso de la forma que proporciona la libreria para poder utilizarlo `const {register, errors, handleSubmit} = useForm()`, despues se hace uso de la funcion onSubmit que se llama asi misma en la etiqueta Form, en los input va un atributo ref que pasa a `register` y dentro de esta va un objeto con un `required` para los elementos que van a ser requeridos en el formulario los cuales estan en `true` con un mensaje que se va a utilizar en caso de que el usuario no cumpla con las condiciones del formulario y mas abajo de estos se hace uso de los errores que tambien se utilizan para hacer la validacion. 
+
+No olvidar pasar `e.target.reset();` para que al enviar un dato el formulario se limpie automaticamente
+
+```
+import React from 'react';
+import { useForm } from 'react-hook-form'
+
+const AdduserForm = (props) => {
+    const {register, errors, handleSubmit} = useForm();
+
+    const onSubmit = (data, e) => {
+        console.log(data)
+        // Limpiar campos
+        e.target.reset();
+    }
+
+
+    return ( 
+        <form onSubmit={handleSubmit(onSubmit)} >
+            <label>Name</label>
+            <input 
+             type="text"
+             name="name"
+             ref = {
+                register({
+                    required: {value: true, message: 'Campo Requerido'}
+                })
+            } 
+            />
+            <div>
+                {errors?.name?.message}
+            </div>
+            <label>Username</label>
+            <input 
+            type="text" 
+            name="username" 
+            ref = {
+                register({
+                    required: {value: true, message: 'Campo Requerido'}
+                })
+            } 
+            />
+            <div>
+                {errors?.username?.message}
+            </div>
+            <button>Add new user</button>
+        </form>
+     );
+}
+ 
+export default AdduserForm;
+```
+
+Tambien se debe crear el props en **App.js** dentro de la etiqueta del return `<AddUserForm/>`
+
+`<AddUserForm addUser={addUser} />`
+
+De esta manera si se envia un campo si llenar se marca debajo de este Campo Requerido, y si se envia informacion lo recibe la consola
+
+![assets-git/76.png](assets-git/76.png)
+
+para enviar los usuarios que esta enviando el formulario a imprimir se debe agregar a la funcion onSubmit `props.adduser(data)`
+
+```
+    const onSubmit = (data, e) => {
+        console.log(data)
+        //Limpiar campos
+        props.adduser(data)
+        e.target.reset();
+    }
+```
+
+Si nuevamente se envia al usuario, este se debe imprimir debajo de los creados al inicio de la aplicacion
+
+![assets-git/77.png](assets-git/77.png)
+
+Ahora se crea la funcion para eliminar usuarios en **App.js** debajo de la constante `addUser`
+
+```
+  // Eliminar Usuarios
+  const deleteUser = (id) => {
+
+  }
+```
+
+y luego se pasa a la etiqueta UserTable como otro props quedando asi 
+
+`<UserTable users={users} deleteUser={deleteUser}/>`
+
+En la etiqueta de boton de delete del componente UserTable se debe pasar la funcion y llamarla a traves de onClick con un arrow function para que cuando se reincie el formulario no se ejecute de una vez con onClick, pasar como parametro el id y queda asi 
+
+```
+<button 
+className="button muted-button"
+onClick={() => {props.deleteUser(user.id)}}
+>
+    Delete
+</button>
+```
+
+```
+import React from 'react';
+
+const userTable = (props) => {
+
+    console.log(props.users)
+    return ( 
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    props.users.length > 0 ? (
+                    props.users.map(user => (
+
+                        <tr key= {user.id}>
+                            <td>{user.name}</td>
+                            <td>{user.username}</td>
+                            <td>
+                                <button className="button muted-button">Edit</button>
+                                <button 
+                                className="button muted-button"
+                                onClick={() => {props.deleteUser}}
+                                >
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    )
+                )) : (
+                    <tr>
+                  <td colSpan={3}> No users</td>
+                  </tr>  
+                )
+                }
+            </tbody>
+        </table>
+     );
+}
+ 
+export default userTable;
+```
+
+Si se hace un console.log dentro de la funcion deleteUser en **App.js**
+
+```
+  // Eliminar Usuarios
+  const deleteUser = (id) => {
+    console.log(id)
+  }
+```
+
+al hacer click sobre el boton delete de alguno de los usuario ya creados, va a retornar el id
+
+![assets-git/78.png](assets-git/78.png)
+
+A continuacion se le va a dar la funcionalidad al boton para eliminar al usuario para esto ubicar la funcion deleteUser y se debe realizar un filtro donde se la condicion es que se hace un recorrido por todos los usuarios. si user.id es distinto al id que se esta enviando guardelo dentro del filtro y cuando user.id sea igual al id lo va a excluir.
+
+Este se puede usar de dos formas la primera es esta
+
+```
+  // Eliminar Usuarios
+  const deleteUser = (id) => {
+    
+    setUsers(users.filter(user => user.id !== id))
+  }
+
+```
+
+o la segunda es creando una constante y pasarlo a los parametros del modificador setUsers
+
+```
+  // Eliminar Usuarios
+  const deleteUser = (id) => {
+
+    const arrayFiltrado = users.filter(user => user.id !== id)
+
+    setUsers(arrayFiltrado)
+  }
+```
+
+De esta forma al dar un clic sobre el boton eliminar ya se va a empezar a eliminar usuarios. En este se elimina a Camilo y se agregan 3 usuarios mas
+
+![assets-git/79.png](assets-git/79.png)
+
+Ahora se va a dar la funcionalidad para empezar a editar los usuarios para esto a continuacion del la funcion deleteUser se crea otra funcion que se llamara edituser
+
+```
+  // Editar Usuarios 
+  const editUser = () => {
+
+  }
+```
+Ahora nuevamente se va a crear un compente que se llamara **EditUserForm.jsx** y este tendra una estructura similar al compoenente de **AdduserForm.jsx**
+
+
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
