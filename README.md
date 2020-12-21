@@ -4962,7 +4962,7 @@ export default Civilizacion
 
 el fetch se debe cambiar por comillas simples invertidas por que alli es donde se va a obtener el id y se cambia fetch por lo siguiente
 
-`const data = await fetch(`https://age-of-empires-2-api.herokuapp.com/api/v1/civilization/${id}`)`
+```const data = await fetch(`https://age-of-empires-2-api.herokuapp.com/api/v1/civilization/${id}`)```
 
 y la respuesta en el json devuelve un objeto que se puede obtener solo con `names`
 
