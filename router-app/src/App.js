@@ -9,6 +9,7 @@ import {
 import Contacto from './components/Contacto';
 import Inicio from './components/Inicio';
 import Nosotros from './components/Nosotros';
+import Civilizacion from './components/Civilizacion';
 
 
 function App() {
@@ -22,14 +23,17 @@ function App() {
       </div>
       <hr/>
       <Switch>
-        <Route path="/" exact>
-          <Inicio/>
+        <Route path="/nosotros/:id">
+          <Civilizacion />
         </Route>
         <Route path="/contacto">
           <Contacto/>
         </Route>
         <Route path="/nosotros">
           <Nosotros/>
+        </Route>
+        <Route path="/" exact>
+          <Inicio/>
         </Route>
       </Switch>
     </div>

@@ -22,7 +22,7 @@
 
 [React Router Rutas con Parámetros consumiendo una API](#React-Router-Rutas-con-Parámetros-consumiendo-una-API)
 
-[]()
+[React Redux con Hooks y Ducks Instalaciones Necesarias 1er parte](#React-Redux-con-Hooks-y-Ducks-Instalaciones-Necesarias-1er-parte)
 
 []()
 
@@ -4624,7 +4624,416 @@ export default Nosotros
 
 ## React Router Rutas con Parámetros consumiendo una API
 
+A continuacion se va a hacer uso de la API de [Age Of Empires II](https://age-of-empires-2-api.herokuapp.com/docs/)
+
+primero hacer clic sobre **GET /Civilizations**
+
 ![assets-git/105.png](assets-git/105.png)
+
+Después dar clic sobre el botón **Try it out**
+
+Después clic sobre el boton **Execute**
+
+![assets-git/106.png](assets-git/106.png)
+
+y luego copiar la url [https://age-of-empires-2-api.herokuapp.com/api/v1/civilizations](https://age-of-empires-2-api.herokuapp.com/api/v1/civilizations)
+
+Al abrir el link de la url van a aparecer datos como en el capitulo anterior en formato json.
+
+Por tanto se va a modificar el componente de Nosotros y se va a adaptar para empezar a consumir el API de Age Of Empires II
+
+Pero es recomendable antes de empezar. Utilizar una extension de Google Chrome que se llama [CORS Unblock](https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino), porque cuando empezamos a trabajar con APIS y no nos piden trabajar con autenticación o llaves de acceso puede que se bloquie por temas de CORS.
+
+Una vez que este instalado y se haya lanzado la aplicacion dar clic sobre la imagen de la instalacion para habilitar el bloqueo de CORS
+
+![assets-git/107.png](assets-git/107.png)
+
+Ahora se va a modificar el archivo **Nosotros.jsx** por lo siguiente adaptandolo mas a la tematica de la API
+
+Los unicos cambios realizados hasta el momento son los siguientes.
+
+- En la constante data se llama a la API de de Age Of Empires II
+
+- La constante users ahora se llama names
+
+- El estado se cambia de equipo a civilizacion y el modificador a setCivilizacion
+
+- Para poder acceder a las civilizaciones que esta arrojando la API con el modificador setCivilizacion se accede con `names.covilizations`
+
+```
+        const data = await fetch('https://age-of-empires-2-api.herokuapp.com/api/v1/civilizations')
+        const names = await data.json()
+        // console.log(users)
+        setCivilizacion(names.civilizations)
+    }
+
+    const [civilizacion, setCivilizacion] = useState([])
+```
+
+- Se llama al estado que es civilizacion, se hace un recorrido por cada nombre accediendo al id, al nombre y a la expansion que nos brinda la API en el objeto json
+
+```
+            <ul>
+                {
+                    civilizacion.map(name => (
+                        <li key={name.id}>{name.name} - {name.expansion}</li>
+                    ))
+                }
+            </ul>
+```
+
+La modificacion de **Nosotros.jsx** queda de la siguiente forma
+
+```
+import React, {useEffect, useState} from 'react';
+
+const Nosotros = () => {
+
+    // const datos = [
+    //     {id: 1, nombre: 'Reactjs'},
+    //     {id: 2, nombre: 'Vuejs'},
+    //     {id: 3, nombre: 'Angularjs'},
+    // ]
+
+    const obtenerDatos = async () => {
+        const data = await fetch('https://age-of-empires-2-api.herokuapp.com/api/v1/civilizations')
+        const names = await data.json()
+        // console.log(users)
+        setCivilizacion(names.civilizations)
+    }
+
+    const [civilizacion, setCivilizacion] = useState([])
+
+    useEffect(()=> {
+        console.log('useEffect')
+        // setEquipo(datos)
+        obtenerDatos()
+    }, [])
+
+
+    return (
+        <div>
+            <h1>Nosotros</h1>
+            <ul>
+                {
+                    civilizacion.map(name => (
+                        <li key={name.id}>{name.name} - {name.expansion}</li>
+                    ))
+                }
+            </ul>
+        </div>
+    )
+}
+
+export default Nosotros
+
+```
+
+De esta forma se obtiene la informacion cargada en la ruta `/nosotros`
+
+![assets-git/108.png](assets-git/108.png)
+
+Aprovechando que en esta aplicación se puede utilizar la libreria de `react-router-dom` en el componente **Nosotros**, hacemos la importación de Link para poder usarlo de la etiqueta `<ul></ul>` del mismo componente.
+
+Se puede importar solamente a Link asi `import { Link } from 'react-router-dom'`
+
+y ahora utilizar dentro de las etiquetas `<ul>` asi 
+
+```
+            <ul>
+                {
+                    civilizacion.map(name => (
+                        <li key={name.id}>
+                            <Link>
+                                {name.name} - {name.expansion}
+                            </Link>
+                        </li>
+                    ))
+                }
+            </ul>
+```
+
+En el anterior capitulo se hizo uso del atributo `to` para establecer la direccion hacia el path. En esta ocasion se debe establecer entre corchetes y comillas simples invertidas `<Link to={`/nosotros/${name.id}`}>`
+
+```
+import React, {useEffect, useState} from 'react';
+import { Link } from 'react-router-dom'
+
+const Nosotros = () => {
+
+    // const datos = [
+    //     {id: 1, nombre: 'Reactjs'},
+    //     {id: 2, nombre: 'Vuejs'},
+    //     {id: 3, nombre: 'Angularjs'},
+    // ]
+
+    const obtenerDatos = async () => {
+        const data = await fetch('https://age-of-empires-2-api.herokuapp.com/api/v1/civilizations')
+        const names = await data.json()
+        // console.log(users)
+        setCivilizacion(names.civilizations)
+    }
+
+    const [civilizacion, setCivilizacion] = useState([])
+
+    useEffect(()=> {
+        console.log('useEffect')
+        // setEquipo(datos)
+        obtenerDatos()
+    }, [])
+
+
+    return (
+        <div>
+            <h1>Nosotros</h1>
+            <ul>
+                {
+                    civilizacion.map(name => (
+                        <li key={name.id}>
+                            <Link to={`/nosotros/${name.id}`}>
+                                {name.name} - {name.expansion}
+                            </Link>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+    )
+}
+
+export default Nosotros
+
+```
+
+Esto lo que va a hacer es dar acceso a cada id de cada civilización. Pero falta establecer la peticion para acceder a cada una de ellas. Por el momento en el navegador se imprimen los elementos de esta forma
+
+![assets-git/109.png](assets-git/109.png)
+
+si hacemos clic sobre algun elemento de estos, el path se va a actualizar con el id 
+
+![assets-git/110.png](assets-git/110.png)
+
+![assets-git/112.png](assets-git/112.png)
+
+Para hacer el contenido mas dinamico ahora vamos a crear una nueva ruta en **App.js**, como esta es la ultima ruta que se esta añadiendo, recordar que las rutas van de lo general a la mas espicifico y a continuacion se añade la ruta `path="/nosotros/:id`, como se esta cargado el `id`, este va a ser el acceso a cada civilizacion, primero se va a llamar al componente **Civilizacion** pero tener presente que hay que crearlo en la carpeta **components**
+
+```
+        <Route path="/nosotros/:id">
+          <Civilizacion />
+        </Route>
+```
+
+```
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  NavLink
+} from "react-router-dom";
+import Contacto from './components/Contacto';
+import Inicio from './components/Inicio';
+import Nosotros from './components/Nosotros';
+import Civilizacion from './components/Civilizacion';
+
+
+function App() {
+  return (
+    <Router>
+    <div className="container mt-5">
+      <div className="btn-group">
+        <Link to="/" className="btn btn-dark">Inicio</Link>
+        <Link to="/contacto" className="btn btn-dark">Contacto</Link>
+        <Link to="/nosotros" className="btn btn-dark">Nosotros</Link>
+      </div>
+      <hr/>
+      <Switch>
+        <Route path="/nosotros/:id">
+          <Civilizacion />
+        </Route>
+        <Route path="/contacto">
+          <Contacto/>
+        </Route>
+        <Route path="/nosotros">
+          <Nosotros/>
+        </Route>
+        <Route path="/" exact>
+          <Inicio/>
+        </Route>
+      </Switch>
+    </div>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+Creamos el componente **Civilizacion.jsx**
+
+```
+import React from 'react';
+
+const Civilizacion = () => {
+    return (
+        <div>
+            <h1>Civilizaciones</h1>
+        </div>
+    )
+}
+
+export default Civilizacion
+
+```
+
+![assets-git/113.png](assets-git/113.png)
+
+Cualquier id que se cargue despues de `/Nosotros/` va a hacer render de la imagen
+
+En el componente **Civilizacion.jsx** se puede hacer uso de un Hook que se llama `useParams`, que se importa de la misma forma que `useState` o `useEffect` y se puede llamar asi 
+
+`console.log(useParams())`
+
+```
+import React from 'react';
+import { useParams } from 'react-router-dom';
+
+const Civilizacion = () => {
+
+    console.log(useParams())
+
+    return (
+        <div>
+            <h1>Civilizaciones</h1>
+        </div>
+    )
+}
+
+export default Civilizacion
+
+```
+
+En la consola vamos a obtener el id que se esta pasando en ese momento en el path
+
+![assets-git/114.png](assets-git/114.png)
+
+para obtener el id del API creamos una constante con el parametro que vamos a obtener el cual es el id y lo obtenemos del `useParams()`
+
+`const {id} = useParams()`
+
+realizamos un `console.log` de `id` si se quiere retornar el id, pero no como objeto y se hace uso de async await para obtener el id creando un estado que en este caso se llamara `datosCivilizacion` y modificador `setDatoscivilizacion`, se debe inicializar con un array vacio, podemos usarlo de la misma forma en que se utilizo en **Nosotros.jsx** de esta forma
+
+```
+import React from 'react';
+import {useState, useEffect} from 'react'
+import { useParams } from 'react-router-dom';
+
+const Civilizacion = () => {
+
+    // console.log(useParams())
+
+    const {id} = useParams()
+    console.log(id)
+
+    const [datosCivilizacion, setDatosCivilizacion] = useState([])
+
+    useEffect(() => {
+        obtenerDatos()
+    }, [])
+    
+    const obtenerDatos = async () => {
+        const data = await fetch('https://age-of-empires-2-api.herokuapp.com/api/v1/civilizations')
+        const names = await data.json()
+        // console.log(names)
+        setDatosCivilizacion(names.civilizations)
+    }
+
+    return (
+        <div>
+            <h1>Civilizaciones</h1>
+        </div>
+    )
+}
+
+export default Civilizacion
+
+```
+
+el fetch se debe cambiar por comillas simples invertidas por que alli es donde se va a obtener el id y se cambia fetch por lo siguiente
+
+`const data = await fetch(`https://age-of-empires-2-api.herokuapp.com/api/v1/civilization/${id}`)`
+
+y la respuesta en el json devuelve un objeto que se puede obtener solo con `names`
+
+`setdDatosCivilizacion(names)`
+
+y dentro del return se puede acceder a los datos que brinda ese objeto json
+
+```
+import React from 'react';
+import {useState, useEffect} from 'react'
+import { useParams } from 'react-router-dom';
+
+const Civilizacion = () => {
+
+    // console.log(useParams())
+
+    const {id} = useParams()
+    console.log(id)
+
+    const [datosCivilizacion, setDatosCivilizacion] = useState([])
+
+    useEffect(() => {
+        obtenerDatos()
+    }, [])
+    
+    const obtenerDatos = async () => {
+        const data = await fetch(`https://age-of-empires-2-api.herokuapp.com/api/v1/civilization/${id}`);
+        const names = await data.json()
+        // console.log(names)
+        setDatosCivilizacion(names)
+    }
+
+    return (
+        <div>
+            <h1>{datosCivilizacion.name}</h1>
+            <h3>{datosCivilizacion.expansion}</h3>
+            <p>{datosCivilizacion.civilization_bonus}</p>
+        </div>
+    )
+}
+
+export default Civilizacion
+
+```
+
+![assets-git/115.png](assets-git/115.png)
+
+Para evitar que salga el recuadro amarillo se puede trasladar toda la constante de `obtenerDatos` a useEffect y de esta forma no se va a generar esa informacion y se pasa el `[id]` entre los corchetes que obtienen un solo dato
+
+```
+    useEffect(() => {
+        const obtenerDatos = async () => {
+            const data = await fetch(`https://age-of-empires-2-api.herokuapp.com/api/v1/civilization/${id}`);
+            const names = await data.json()
+            // console.log(names)
+            setDatosCivilizacion(names)
+        }
+        obtenerDatos()
+    }, [id])
+    
+```
+
+![assets-git/116.png](assets-git/116.png)
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## React Redux con Hooks y Ducks Instalaciones Necesarias 1er parte
+
+![assets-git/117.png](assets-git/117.png)
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>

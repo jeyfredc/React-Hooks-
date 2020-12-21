@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import { Link } from 'react-router-dom'
 
 const Nosotros = () => {
 
@@ -9,13 +10,13 @@ const Nosotros = () => {
     // ]
 
     const obtenerDatos = async () => {
-        const data = await fetch('https://jsonplaceholder.typicode.com/users')
-        const users = await data.json()
+        const data = await fetch('https://age-of-empires-2-api.herokuapp.com/api/v1/civilizations')
+        const names = await data.json()
         // console.log(users)
-        setEquipo(users)
+        setCivilizacion(names.civilizations)
     }
 
-    const [equipo, setEquipo] = useState(null)
+    const [civilizacion, setCivilizacion] = useState([])
 
     useEffect(()=> {
         console.log('useEffect')
@@ -29,8 +30,12 @@ const Nosotros = () => {
             <h1>Nosotros</h1>
             <ul>
                 {
-                    equipo.map(user => (
-                        <li key={user.id}>{user.name} - {user.email}</li>
+                    civilizacion.map(name => (
+                        <li key={name.id}>
+                            <Link to={`/nosotros/${name.id}`}>
+                                {name.name} - {name.expansion}
+                            </Link>
+                        </li>
                     ))
                 }
             </ul>
