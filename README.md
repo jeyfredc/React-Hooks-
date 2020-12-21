@@ -2891,16 +2891,1033 @@ De esta forma al dar un clic sobre el boton eliminar ya se va a empezar a elimin
 
 ![assets-git/79.png](assets-git/79.png)
 
-Ahora se va a dar la funcionalidad para empezar a editar los usuarios para esto a continuacion del la funcion deleteUser se crea otra funcion que se llamara edituser
+Ahora nuevamente se va a crear un compente que se llamara **EditUserForm.jsx** y este tendra una estructura similar al componente de **AdduserForm.jsx**
 
 ```
-  // Editar Usuarios 
-  const editUser = () => {
+import React from 'react';
+import { useForm } from 'react-hook-form'
 
+const EditUserForm = (props) => {
+    const {register, errors, handleSubmit} = useForm();
+
+    const onSubmit = (data, e) => {
+        console.log(data)
+
+        //Limpiar campos
+        e.target.reset();
+    }
+
+
+    return ( 
+        <form onSubmit={handleSubmit(onSubmit)} >
+            <label>Name</label>
+            <input 
+             type="text"
+             name="name"
+             ref = {
+                register({
+                    required: {value: true, message: 'Campo Requerido'}
+                })
+            } 
+            />
+            <div>
+                {errors?.name?.message}
+            </div>
+            <label>Username</label>
+            <input 
+            type="text" 
+            name="username" 
+            ref = {
+                register({
+                    required: {value: true, message: 'Campo Requerido'}
+                })
+            } 
+            />
+            <div>
+                {errors?.username?.message}
+            </div>
+            <button>Edit user</button>
+        </form>
+     );
+}
+ 
+export default EditUserForm;
+```
+
+En **App.js** se hace el llamado del componente y se va a realizar una validacion para la edicion. Pero antes de eso se agrega antes de la etiqueta `<h2> Add User </h2>` para ver el formulario para editar
+
+```
+import React, {useState} from 'react'
+import UserTable from './components/UserTable'
+import AddUserForm from './components/AddUserForm'
+import EditUserForm from './components/EditUserForm'
+import {v4 as uuidv4} from 'uuid'
+
+function App() {
+
+  const usersData = [
+    {id: uuidv4(), name: 'Juan', username: 'Juanc10' },
+    {id: uuidv4(), name: 'Camilo', username: 'Camilo20' },
+    {id: uuidv4(), name: 'Michael', username: 'Michael5' },
+  ]
+
+  //State
+
+  const [users, setUsers] = useState(usersData);
+
+  // Agregar Usuarios
+  const addUser = (user) => {
+    user.id = uuidv4()
+    setUsers([
+      ...users,
+      user
+    ])
   }
-```
-Ahora nuevamente se va a crear un compente que se llamara **EditUserForm.jsx** y este tendra una estructura similar al compoenente de **AdduserForm.jsx**
 
+  // Eliminar Usuarios
+  const deleteUser = (id) => {
+
+    const arrayFiltrado = users.filter(user => user.id !== id)
+
+    setUsers(arrayFiltrado)
+  }
+
+
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          <EditUserForm/>
+          <h2>Add User</h2>
+          <AddUserForm addUser={addUser} />
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable users={users} deleteUser={deleteUser}/>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+![assets-git/80.png](assets-git/80.png)
+
+para el formulario de edicion dentro de **App.js** se puede agregar un `<h2> Edit User </h2>` antes de imprimir el hook `<EditUserForm/>`. Cuando el usuario seleccione Edit, es cuando se debe llamar al formulario de edicion por tanto se debe crear un useState que active y desactive el mismo y se debe inicializar en falso. `const [editUser, setEditUser] = useState(false)`.
+
+Despues se hace una validacion. si edituser es verdadero imprima editUser, en caso contrario imprima addUser
+
+```
+          {
+            editUser ? (
+              <div>
+                <h2>Edit User</h2>
+                <EditUserForm/>
+              </div>
+            ) : (
+              <div>
+              <h2>Add User</h2>
+              <AddUserForm addUser={addUser} />
+              </div>
+            )
+          }
+```
+
+```
+import React, {useState} from 'react'
+import UserTable from './components/UserTable'
+import AddUserForm from './components/AddUserForm'
+import EditUserForm from './components/EditUserForm'
+import {v4 as uuidv4} from 'uuid'
+
+function App() {
+
+  const usersData = [
+    {id: uuidv4(), name: 'Juan', username: 'Juanc10' },
+    {id: uuidv4(), name: 'Camilo', username: 'Camilo20' },
+    {id: uuidv4(), name: 'Michael', username: 'Michael5' },
+  ]
+
+  //State
+
+  const [users, setUsers] = useState(usersData);
+
+  // Agregar Usuarios
+  const addUser = (user) => {
+    user.id = uuidv4()
+    setUsers([
+      ...users,
+      user
+    ])
+  }
+
+  // Eliminar Usuarios
+  const deleteUser = (id) => {
+
+    const arrayFiltrado = users.filter(user => user.id !== id)
+
+    setUsers(arrayFiltrado)
+  }
+
+  // Editar Usuarios 
+const [editUser, setEditUser] = useState(false)
+
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          {
+            editUser ? (
+              <div>
+                <h2>Edit User</h2>
+                <EditUserForm/>
+              </div>
+            ) : (
+              <div>
+              <h2>Add User</h2>
+              <AddUserForm addUser={addUser} />
+              </div>
+            )
+          }
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable users={users} deleteUser={deleteUser} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+Despues de hacer esta validacion se debe dejar de ver el formulario de editar usuario
+
+![assets-git/81.png](assets-git/81.png)
+
+como se quiere dar funcionalidad al boton Edit, el modificador se debe llamar como props en el Hook de `<Usertable/>` por tanto este queda asi 
+
+```
+          <UserTable 
+          users={users} 
+          deleteUser={deleteUser}
+          setEditUser={setEditUser}
+          />
+```
+
+```
+import React, {useState} from 'react'
+import UserTable from './components/UserTable'
+import AddUserForm from './components/AddUserForm'
+import EditUserForm from './components/EditUserForm'
+import {v4 as uuidv4} from 'uuid'
+
+function App() {
+
+  const usersData = [
+    {id: uuidv4(), name: 'Juan', username: 'Juanc10' },
+    {id: uuidv4(), name: 'Camilo', username: 'Camilo20' },
+    {id: uuidv4(), name: 'Michael', username: 'Michael5' },
+  ]
+
+  //State
+
+  const [users, setUsers] = useState(usersData);
+
+  // Agregar Usuarios
+  const addUser = (user) => {
+    user.id = uuidv4()
+    setUsers([
+      ...users,
+      user
+    ])
+  }
+
+  // Eliminar Usuarios
+  const deleteUser = (id) => {
+
+    const arrayFiltrado = users.filter(user => user.id !== id)
+
+    setUsers(arrayFiltrado)
+  }
+
+  // Editar Usuarios 
+const [editUser, setEditUser] = useState(false)
+
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          {
+            editUser ? (
+              <div>
+                <h2>Edit User</h2>
+                <EditUserForm/>
+              </div>
+            ) : (
+              <div>
+              <h2>Add User</h2>
+              <AddUserForm addUser={addUser} />
+              </div>
+            )
+          }
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable 
+          users={users} 
+          deleteUser={deleteUser}
+          setEditUser={setEditUser}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+A continuacion en el componente UserTable buscar el boton de Edit y añadir la funcion `onClick={}` con un arrow function para que no se ejecute automaticamente y se agrega props.setEdituser y se pasa en true
+
+```
+     <button 
+     className="button muted-button"
+     onClick={
+         () => props.setEditUser(true)
+     }
+     >Edit
+     </button>
+```
+
+```
+import React from 'react';
+
+const userTable = (props) => {
+
+    console.log(props.users)
+    return ( 
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    props.users.length > 0 ? (
+                    props.users.map(user => (
+
+                        <tr key= {user.id}>
+                            <td>{user.name}</td>
+                            <td>{user.username}</td>
+                            <td>
+                                <button 
+                                className="button muted-button"
+                                onClick={
+                                    () => props.setEditUser(true)
+                                }
+                                >Edit
+                                </button>
+                                <button 
+                                className="button muted-button"
+                                onClick={() => {props.deleteUser(user.id)}}
+                                >
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    )
+                )) : (
+                    <tr>
+                  <td colSpan={3}> No users</td>
+                  </tr>  
+                )
+                }
+            </tbody>
+        </table>
+     );
+}
+ 
+export default userTable;
+```
+
+Al guardar y regresar al navegador y dar clic sobre el boton edit se debe mostrar el formulario de edicion de usuario
+
+![assets-git/82.png](assets-git/82.png)
+
+Falta agregar la funcion para que se modifique el usuario. Para realizar esto abrir nuevamente **App.js** y a continuacion del useState para editar Usuarios agregar otro que tendra un estado currentUser y modificador setCurrentUser que se va a inicializar con un objeto que empieza por el id en nulo, nombre con string vacio y usuario con string vacio
+
+```
+const [currentUser, setCurrentUser]= useState({
+  id: null, name: '', username: '', 
+})
+```
+
+Ahora hay que agregar una funcion que modifique a cada usuario. para esto se pasa al modificador `setCurrentuser` y en el objeto recibe el id, el name y el username con su propiedad
+
+```
+const editRow = (user) => {
+  setCurrentUser({
+    id: user.id, name: user.name, username: user.username
+  })
+}
+```
+
+luego en el componente `<UserTable/>` se llama a la funcion editRow
+
+```
+          <UserTable 
+          users={users} 
+          deleteUser={deleteUser}
+          setEditUser={setEditUser}
+          editRow={editRow}
+          />
+
+```
+
+```
+import React, {useState} from 'react'
+import UserTable from './components/UserTable'
+import AddUserForm from './components/AddUserForm'
+import EditUserForm from './components/EditUserForm'
+import {v4 as uuidv4} from 'uuid'
+
+function App() {
+
+  const usersData = [
+    {id: uuidv4(), name: 'Juan', username: 'Juanc10' },
+    {id: uuidv4(), name: 'Camilo', username: 'Camilo20' },
+    {id: uuidv4(), name: 'Michael', username: 'Michael5' },
+  ]
+
+  //State
+
+  const [users, setUsers] = useState(usersData);
+
+  // Agregar Usuarios
+  const addUser = (user) => {
+    user.id = uuidv4()
+    setUsers([
+      ...users,
+      user
+    ])
+  }
+
+  // Eliminar Usuarios
+  const deleteUser = (id) => {
+
+    const arrayFiltrado = users.filter(user => user.id !== id)
+
+    setUsers(arrayFiltrado)
+  }
+
+  // Editar Usuarios 
+const [editUser, setEditUser] = useState(false)
+
+const [currentUser, setCurrentUser]= useState({
+  id: null, name: '', username: '', 
+})
+
+const editRow = (user) => {
+  setCurrentUser({
+    id: user.id, name: user.name, username: user.username
+  })
+}
+
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          {
+            editUser ? (
+              <div>
+                <h2>Edit User</h2>
+                <EditUserForm/>
+              </div>
+            ) : (
+              <div>
+              <h2>Add User</h2>
+              <AddUserForm addUser={addUser} />
+              </div>
+            )
+          }
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable 
+          users={users} 
+          deleteUser={deleteUser}
+          setEditUser={setEditUser}
+          editRow={editRow}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+Ahora en el componente UserTable en vez de pasar de pasar 
+
+```
+      <button 
+      className="button muted-button"
+      onClick={
+          () => props.setEditUser(true)
+      }
+      >Edit
+      </button>
+```
+
+se reemplaza por editRow para que reciba al usuario
+
+```
+      <button 
+      className="button muted-button"
+      onClick={
+          () => props.editRow(user)}
+      >Edit
+      </button>
+```
+
+dentro de **App.js** como ya no se esta pasando el props de setEditUser, se elimina del Hook y se pasa a editRow para modificarlo en true
+
+```
+import React, {useState} from 'react'
+import UserTable from './components/UserTable'
+import AddUserForm from './components/AddUserForm'
+import EditUserForm from './components/EditUserForm'
+import {v4 as uuidv4} from 'uuid'
+
+function App() {
+
+  const usersData = [
+    {id: uuidv4(), name: 'Juan', username: 'Juanc10' },
+    {id: uuidv4(), name: 'Camilo', username: 'Camilo20' },
+    {id: uuidv4(), name: 'Michael', username: 'Michael5' },
+  ]
+
+  //State
+
+  const [users, setUsers] = useState(usersData);
+
+  // Agregar Usuarios
+  const addUser = (user) => {
+    user.id = uuidv4()
+    setUsers([
+      ...users,
+      user
+    ])
+  }
+
+  // Eliminar Usuarios
+  const deleteUser = (id) => {
+
+    const arrayFiltrado = users.filter(user => user.id !== id)
+
+    setUsers(arrayFiltrado)
+  }
+
+  // Editar Usuarios 
+const [editUser, setEditUser] = useState(false)
+
+const [currentUser, setCurrentUser]= useState({
+  id: null, name: '', username: '', 
+})
+
+const editRow = (user) => {
+  setEditUser(true)
+  setCurrentUser({
+    id: user.id, name: user.name, username: user.username
+  })
+}
+
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          {
+            editUser ? (
+              <div>
+                <h2>Edit User</h2>
+                <EditUserForm/>
+              </div>
+            ) : (
+              <div>
+              <h2>Add User</h2>
+              <AddUserForm addUser={addUser} />
+              </div>
+            )
+          }
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable 
+          users={users} 
+          deleteUser={deleteUser}
+          editRow={editRow}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+editRow esta recibiendo ahora a setEdituser y a setCurrentUser por tanto ahora se debe agregar a `currentUser` como props del componente `<EditUserForm/>`
+
+```
+import React, {useState} from 'react'
+import UserTable from './components/UserTable'
+import AddUserForm from './components/AddUserForm'
+import EditUserForm from './components/EditUserForm'
+import {v4 as uuidv4} from 'uuid'
+
+function App() {
+
+  const usersData = [
+    {id: uuidv4(), name: 'Juan', username: 'Juanc10' },
+    {id: uuidv4(), name: 'Camilo', username: 'Camilo20' },
+    {id: uuidv4(), name: 'Michael', username: 'Michael5' },
+  ]
+
+  //State
+
+  const [users, setUsers] = useState(usersData);
+
+  // Agregar Usuarios
+  const addUser = (user) => {
+    user.id = uuidv4()
+    setUsers([
+      ...users,
+      user
+    ])
+  }
+
+  // Eliminar Usuarios
+  const deleteUser = (id) => {
+
+    const arrayFiltrado = users.filter(user => user.id !== id)
+
+    setUsers(arrayFiltrado)
+  }
+
+  // Editar Usuarios 
+const [editUser, setEditUser] = useState(false)
+
+const [currentUser, setCurrentUser]= useState({
+  id: null, name: '', username: '', 
+})
+
+const editRow = (user) => {
+  setEditUser(true)
+  setCurrentUser({
+    id: user.id, name: user.name, username: user.username
+  })
+}
+
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          {
+            editUser ? (
+              <div>
+                <h2>Edit User</h2>
+                <EditUserForm 
+                currentUser= {currentUser}
+                />
+              </div>
+            ) : (
+              <div>
+              <h2>Add User</h2>
+              <AddUserForm addUser={addUser} />
+              </div>
+            )
+          }
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable 
+          users={users} 
+          deleteUser={deleteUser}
+          editRow={editRow}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+Ahora dentro del componente **EditUserForm** llamar por consola props.currentUser para ver que informacion se esta recibiendo al presionar el boton edit
+
+`console.log(props.currentUser)`
+
+```
+import React from 'react';
+import { useForm } from 'react-hook-form'
+
+const EditUserForm = (props) => {
+
+    console.log(props.currentUser)
+
+    const {register, errors, handleSubmit} = useForm();
+
+    const onSubmit = (data, e) => {
+        console.log(data)
+
+        //Limpiar campos
+        e.target.reset();
+    }
+
+
+    return ( 
+        <form onSubmit={handleSubmit(onSubmit)} >
+            <label>Name</label>
+            <input 
+             type="text"
+             name="name"
+             ref = {
+                register({
+                    required: {value: true, message: 'Campo Requerido'}
+                })
+            } 
+            />
+            <div>
+                {errors?.name?.message}
+            </div>
+            <label>Username</label>
+            <input 
+            type="text" 
+            name="username" 
+            ref = {
+                register({
+                    required: {value: true, message: 'Campo Requerido'}
+                })
+            } 
+            />
+            <div>
+                {errors?.username?.message}
+            </div>
+            <button>Edit user</button>
+        </form>
+     );
+}
+ 
+export default EditUserForm;
+```
+
+Al dar clic sobre el boton Edit en la consola en la parte derecha trae el id, el name y el username de cada usuario
+
+![assets-git/83.png](assets-git/83.png)
+
+la libreria de react-hook-form se le pueden pasar datos mediante un objeto en los paramentro del useForm, estos datos se pasan como `defaultValues` los cuales son los valores por defecto que trae `props.currentUser` los cuales son el input del `name` y el `username`
+
+y para llamar cada valor a imprimir dentro de los campos de formulario se utiliza `setValue` llamando a las propiedades de name y username
+
+```
+    console.log(props.currentUser)
+
+    const {register, errors, handleSubmit, setValue} = useForm({
+        defaultValues: props.currentUser
+    });
+
+    setValue('name', props.currentUser.name)
+    setValue('username', props.currentUser.username)
+```
+
+```
+import React from 'react';
+import { useForm } from 'react-hook-form'
+
+const EditUserForm = (props) => {
+
+    console.log(props.currentUser)
+
+    const {register, errors, handleSubmit} = useForm({
+        defaultValues: props.currentUser
+    });
+
+    setValue('name', props.currentUser.name)
+    setValue('username', props.currentUser.username)
+
+    const onSubmit = (data, e) => {
+        console.log(data)
+
+        //Limpiar campos
+        e.target.reset();
+    }
+
+
+    return ( 
+        <form onSubmit={handleSubmit(onSubmit)} >
+            <label>Name</label>
+            <input 
+             type="text"
+             name="name"
+             ref = {
+                register({
+                    required: {value: true, message: 'Campo Requerido'}
+                })
+            } 
+            />
+            <div>
+                {errors?.name?.message}
+            </div>
+            <label>Username</label>
+            <input 
+            type="text" 
+            name="username" 
+            ref = {
+                register({
+                    required: {value: true, message: 'Campo Requerido'}
+                })
+            } 
+            />
+            <div>
+                {errors?.username?.message}
+            </div>
+            <button>Edit user</button>
+        </form>
+     );
+}
+ 
+export default EditUserForm;
+```
+
+al dar clic sobre cada usuario en el campo del formulario trae la informacion del name y el username para empezar a editarlo
+
+![assets-git/84.png](assets-git/84.png)
+
+![assets-git/85.png](assets-git/85.png)
+
+Falta actualizar la informacion cada vez que se presione el boton Edit User. Para esto regresamos a **App.js** y se añade una nueva funcion a continuacion de editRow que se va a llamar `updateUser` el cual va a recibir un id y a updateUser el cual va a ser el usuario actualizado.
+
+Dentro de la funcion se vuelve a llamar a setEditUser en falso porque alli se presiona el boton de Edit User, es decir es la confirmacion de que ya se edito y se deben guardar los cambio y tambien se llama a setUsers que es el modificador de usuario a traves de un recorrido con el metodo map y luego se hace una validacion que dice si user.id es igual al id que se esta pasando por updateUser entonces imprima updateUser, es decir el usuario actualizado y en caso contrario siga imprimendo a user, es decir al usuario
+
+```
+//Actualizar Usuario
+const updateUser = (id, updateUser) => {
+  setEditUser(false)
+  setUsers(users.map(user => (user.id === id ? updateUser : user)))
+}
+```
+
+Esta accion debe ocurrir en el boton Edit User por tanto se debe llamar como un props al componente `<EditUserForm/>`
+
+```
+      <div>
+        <h2>Edit User</h2>
+        <EditUserForm 
+        currentUser={currentUser}
+        updateUser={updateUser}
+        />
+      </div>
+```
+
+```
+import React, {useState} from 'react'
+import UserTable from './components/UserTable'
+import AddUserForm from './components/AddUserForm'
+import EditUserForm from './components/EditUserForm'
+import {v4 as uuidv4} from 'uuid'
+
+function App() {
+
+  const usersData = [
+    {id: uuidv4(), name: 'Juan', username: 'Juanc10' },
+    {id: uuidv4(), name: 'Camilo', username: 'Camilo20' },
+    {id: uuidv4(), name: 'Michael', username: 'Michael5' },
+  ]
+
+  //State
+
+  const [users, setUsers] = useState(usersData);
+
+  // Agregar Usuarios
+  const addUser = (user) => {
+    user.id = uuidv4()
+    setUsers([
+      ...users,
+      user
+    ])
+  }
+
+  // Eliminar Usuarios
+  const deleteUser = (id) => {
+
+    const arrayFiltrado = users.filter(user => user.id !== id)
+
+    setUsers(arrayFiltrado)
+  }
+
+  // Editar Usuarios 
+const [editUser, setEditUser] = useState(false)
+
+const [currentUser, setCurrentUser]= useState({
+  id: null, name: '', username: '', 
+})
+
+const editRow = (user) => {
+  setEditUser(true)
+  setCurrentUser({
+    id: user.id, name: user.name, username: user.username
+  })
+}
+
+const updateUser = (id, updateUser) => {
+  setEditUser(false)
+  setUsers(users.map(user => (user.id === id ? updateUser : user)))
+}
+
+  return (
+    <div className="Container">
+      <h1>CRUD App with Hooks</h1>
+      <div className="flex-row">
+        <div className="flex-large">
+          {
+            editUser ? (
+              <div>
+                <h2>Edit User</h2>
+                <EditUserForm 
+                currentUser={currentUser}
+                updateUser={updateUser}
+                />
+              </div>
+            ) : (
+              <div>
+              <h2>Add User</h2>
+              <AddUserForm addUser={addUser} />
+              </div>
+            )
+          }
+        </div>
+        <div className="flex-large">
+          <h2>View users</h2>
+          <UserTable 
+          users={users} 
+          deleteUser={deleteUser}
+          editRow={editRow}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default App;
+
+```
+
+Ahora pasar al componente **EditUserForm** y en la funcion `onSubmit` se pasa a props.updateUser, agregando el id y la data la cual es la informacion que se recibe de cada input 
+
+
+Aqui se trae la informacion actual del usuario
+
+`data.id = props.currentUser.id`
+
+y luego se llama a la funcion de actualizar con 
+
+`props.updateUser(props.currentUser.id, data)`
+
+```
+import React from 'react';
+import { useForm } from 'react-hook-form'
+
+const EditUserForm = (props) => {
+
+    console.log(props.currentUser)
+
+    const {register, errors, handleSubmit, setValue} = useForm({
+        defaultValues: props.currentUser
+    });
+
+    setValue('name', props.currentUser.name)
+    setValue('username', props.currentUser.username)
+
+    const onSubmit = (data, e) => {
+        /* console.log(data) */
+        data.id = props.currentUser.id
+
+        props.updateUser(props.currentUser.id, data)
+        //Limpiar campos
+        e.target.reset();
+    }
+
+
+    return ( 
+        <form onSubmit={handleSubmit(onSubmit)} >
+            <label>Name</label>
+            <input 
+             type="text"
+             name="name"
+             ref = {
+                register({
+                    required: {value: true, message: 'Campo Requerido'}
+                })
+            } 
+            />
+            <div>
+                {errors?.name?.message}
+            </div>
+            <label>Username</label>
+            <input 
+            type="text" 
+            name="username" 
+            ref = {
+                register({
+                    required: {value: true, message: 'Campo Requerido'}
+                })
+            } 
+            />
+            <div>
+                {errors?.username?.message}
+            </div>
+            <button>Edit user</button>
+        </form>
+     );
+}
+ 
+export default EditUserForm;
+```
+
+De esta forma ya se puede crear, leer, actualizar y eliminar cualquier usuario
+
+![assets-git/86.png](assets-git/86.png)
+
+![assets-git/87.png](assets-git/87.png)
 
 
 <div align="right">
