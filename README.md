@@ -3919,6 +3919,10 @@ De esta forma ya se puede crear, leer, actualizar y eliminar cualquier usuario
 
 ![assets-git/87.png](assets-git/87.png)
 
+Para utilizar la aplicacion puedes dar click en el siguiente enlace
+
+[https://jeyfredc.github.io/crud/index.html](https://jeyfredc.github.io/crud/index.html)
+
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
