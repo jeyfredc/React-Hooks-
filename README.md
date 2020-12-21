@@ -2166,7 +2166,7 @@ En la terminal ejecutar también `npm install uuid`, esta dependencia ayuda a cr
 
 A continuación en la terminal ejecutar `code .` para abrir el editor de código en la carpeta del proyecto, abrir **src** y empezar a eliminar los archivos que no se van a utilizar los cuales son **App.css**, **logo.svg**, **App.test.js**, **reportWebVitals.js** y **setupTests.js**
 
-El archivo **index.js** dejarlo con la siguiente extructura porque no se esta utilizando reportWebVitals
+El archivo **index.js** dejarlo con la siguiente estructura porque no se esta utilizando reportWebVitals
 
 ```
 import React from 'react';
@@ -3925,9 +3925,382 @@ Para utilizar la aplicación puedes dar clic en el siguiente [enlace](https://je
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
 </div>
 
-## React Router Instalación y configuración de rutas
+## React Router Instalación y configuración de rutas 
+
+A continuación se va a crear una aplicación a la cual le vamos a llamar **router-app**.
+
+En la terminal ubicarse en la carpeta que esta antes de my-app porque se va a crear una nueva aplicación.
+
+Ejecutar `npx create-react-app router-app`
+
+A continuación se va a realizar la instalación de la librería de react-hook-form, para esto se debe acceder a la carpeta **router-app** a través de la terminal y ejecutar `npm install react-router-dom`
+
+A continuación en la terminal ejecutar code . para abrir el editor de código en la carpeta del proyecto, abrir src y empezar a eliminar los archivos que no se van a utilizar los cuales son App.css, logo.svg, App.test.js, reportWebVitals.js y setupTests.js
+
+El archivo **index.js** dejarlo con la siguiente estructura porque no se esta utilizando reportWebVitals
+
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
+A continuación el archivo **App.js**
+
+Para este capitulo se va hacer uso de [Bootstrap](https://getbootstrap.com/).
+
+Lo que se hace es importar el cdn que se encuentra en la pagina de Bootstrap y a continuación, abrir la carpeta **public** del proyecto y copiar este cdn en el archivo **index.html** como se muestra en la imagen a continuación 
+
+```
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+```
+
+![assets-git/31.png](assets-git/31.png)
+
+Modificar el archivo **App.js** por lo siguiente
+
+```
+import React from 'react';
+
+
+function App() {
+  return (
+    <div>
+      <h1>Rutas</h1>
+    </div>
+  );
+}
+
+export default App;
+```
+
+y ejecutar `npm start` para ver que se cargue la aplicacion correctamente
 
 ![assets-git/88.png](assets-git/88.png)
+
+Ya esta funcionando entonces a continuacion se va a hacer uso de la libreria que proporciona react-router-dom, si requieren saber mas acerca de esta en el siguiente [enlace](https://reactrouter.com/web/guides/quick-start) se encuentra toda la informacion de como utilizarla.
+
+Por el momento la guia indica que se debe realizar la importacion en donde se vayan a utilizar las rutas que en este caso sera dentro de **App.js**
+
+```
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+```
+
+esta sintaxis de codigo `BrowserRouter as Router,` es porque con el keyword `as` cambia el nombre de `BrowserRouter` por `Router`, si se deja como esta y se tiene que hacer uso de esta se debe llamar como Router, pero si no se utilizar el keyword `as Router` se llama como `BrowserRouter`
+
+en **App.js** encerramos todo en un div con una clase de Bootstrap que es container y a continuacion se usa el componente de Router de esta forma
+
+```
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
+
+function App() {
+  return (
+    <Router>
+    <div className="container">
+      <h1>Rutas</h1>
+    </div>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+Para empezar hacer rutas en el h1 se cambia Rutas por Navbar, se genera un `<hr/>` para separar el titulo y seguido de este se agrega a `Switch` que es el que va a cargar todo el contenido dinamico, luego se agrega `Route` y dentro de este se puede llamar un componente o el contenido dinamico que nosotros realicemos. `Route` hace uso de `path` y path es la ruta que nosotros configuramos para acceder a un contenido, en este ejemplo este es el path `path="/contacto"` 
+
+```
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
+
+function App() {
+  return (
+    <Router>
+    <div className="container">
+      <h1>NavBar...</h1>
+      <hr/>
+      <Switch>
+        <Route path="/contacto" >
+          Esta es la pagina de contacto
+        </Route>
+      </Switch>
+    </div>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+Primero se carga la pagina normal sin contacto porque no hay ninguna ruta
+
+![assets-git/89.png](assets-git/89.png)
+
+y ahora al establecer la ruta http://localhost:3000/contacto se despliega "Esta es la pagina de contacto"
+
+![assets-git/90.png](assets-git/90.png)
+
+despues se pueden establecer mas rutas por ejemplo la ruta de Nosotros y la ruta de Inicio(que esta por defecto seria la ruta raiz)
+
+```
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
+
+function App() {
+  return (
+    <Router>
+    <div className="container">
+      <h1>NavBar...</h1>
+      <hr/>
+      <Switch>
+        <Route path="/contacto">
+          Esta es la pagina de contacto
+        </Route>
+        <Route path="/nosotros">
+          Esta es la pagina de nosotros
+        </Route>
+        <Route path="/">
+          Esta es la pagina de inicio
+        </Route>
+      </Switch>
+    </div>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+Si a continuacion en el navegador nos dirigimos a http://localhost:3000/nosotros va a aparecer el siguiente
+
+![assets-git/91.png](assets-git/91.png)
+
+y si nos dirigimos a http://localhost:3000/ va a aparecer el siguiente
+
+![assets-git/92.png](assets-git/92.png)
+
+Es recomendable trabajar con React Router de los mas especifico a lo mas general, considerando lo mas general como la ruta raiz(`/`) que es la pagina de inicio. Si se coloca antes del path de contacto posiblemente no cargue a contacto como se ve a continuacion
+
+```
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
+
+function App() {
+  return (
+    <Router>
+    <div className="container">
+      <h1>NavBar...</h1>
+      <hr/>
+      <Switch>
+        <Route path="/">
+          Esta es la pagina de inicio
+        </Route>
+        <Route path="/contacto">
+          Esta es la pagina de contacto
+        </Route>
+        <Route path="/nosotros">
+          Esta es la pagina de nosotros
+        </Route>
+      </Switch>
+    </div>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+![assets-git/93.png](assets-git/93.png)
+
+Se puede trabajar de la forma como se venia haciendo antes de subir la ruta raiz al principio o colocar al lado de la ruta raiz el keyword `exact`
+
+`<Route path="/" exact>`
+
+A continuacion se van a crear los 3 componentes para cargarlos en **App.js**
+
+Primero en la carpeta **src** se crea una sub carpeta que se llame **components** y dentro de esta cada uno de los componentes
+
+el primero sera **Inicio.jsx**
+
+```
+import React from 'react';
+
+const Inicio = () => {
+    return ( 
+        <div>
+            <h1>Inicio</h1>
+        </div>
+     );
+}
+ 
+export default Inicio;
+```
+
+el segundo **Contacto.jsx**
+
+```
+import React from 'react';
+
+const Contacto = () => {
+    return (
+        <div>
+            <h1>Contacto</h1>
+        </div>
+    )
+}
+
+
+export default Contacto
+
+```
+
+y el tercero **Nosotros.jsx**
+
+```
+import React from 'react';
+
+const Nosotros = () => {
+    return (
+        <div>
+            <h1>Nosotros</h1>
+        </div>
+    )
+}
+
+export default Nosotros
+
+```
+
+y ahora se hace la importacion de los componentes en **App.js**
+
+```
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import Contacto from './components/Contacto';
+import Inicio from './components/Inicio';
+import Nosotros from './components/Nosotros';
+
+
+function App() {
+  return (
+    <Router>
+    <div className="container">
+      <h1>NavBar...</h1>
+      <hr/>
+      <Switch>
+        <Route path="/" exact>
+          <Inicio/>
+        </Route>
+        <Route path="/contacto">
+          <Contacto/>
+        </Route>
+        <Route path="/nosotros">
+          <Nosotros/>
+        </Route>
+      </Switch>
+    </div>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+Si a continuacion nos dirigimos a cada una de las rutas se van a imprimir los datos del h1
+
+Para utilizar `Link` que es un componente que trae la libreria de `react-router-doom` lo podemos utilizar dentro del navBar. 
+
+se agrega un div para agrupar botones con las clases de Bootstrap y dentro de la etiqueta `<Link></Link>` y para indicar que se vaya a la ruta Inicio por ejemplo con el atributo `to="/"` automaticamente se va a la pagina
+
+`<Link to="/">Inicio</Link>`
+
+Se pueden añadir el resto de etiquetas con clases de Bootstrap para que se vea mas agradable la pagina
+
+```
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import Contacto from './components/Contacto';
+import Inicio from './components/Inicio';
+import Nosotros from './components/Nosotros';
+
+
+function App() {
+  return (
+    <Router>
+    <div className="container mt-5">
+      <div className="btn-group">
+        <Link to="/" className="btn btn-dark">Inicio</Link>
+        <Link to="/contacto" className="btn btn-dark">Contacto</Link>
+        <Link to="/nosotros" className="btn btn-dark">Nosotros</Link>
+      </div>
+      <hr/>
+      <Switch>
+        <Route path="/" exact>
+          <Inicio/>
+        </Route>
+        <Route path="/contacto">
+          <Contacto/>
+        </Route>
+        <Route path="/nosotros">
+          <Nosotros/>
+        </Route>
+      </Switch>
+    </div>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+![assets-git/94.png](assets-git/94.png)
+
 
 <div align="right">
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
