@@ -22,9 +22,9 @@
 
 [React Router Rutas con Parámetros consumiendo una API](#React-Router-Rutas-con-Parámetros-consumiendo-una-API)
 
-[React Redux con Hooks y Ducks Instalaciones Necesarias 1er parte](#React-Redux-con-Hooks-y-Ducks-Instalaciones-Necesarias-1er-parte)
+[React Redux con Hooks y Ducks Instalaciones Necesarias](#React-Redux-con-Hooks-y-Ducks-Instalaciones-Necesarias)
 
-[]()
+[React Redux con Hooks y Ducks Configurando DUCKS](#React-Redux-con-Hooks-y-Ducks-Configurando-DUCKS)
 
 []()
 
@@ -5031,7 +5031,76 @@ Para evitar que salga el recuadro amarillo se puede trasladar toda la constante 
   <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
 </div>
 
-## React Redux con Hooks y Ducks Instalaciones Necesarias 1er parte
+## React Redux con Hooks y Ducks Instalaciones Necesarias
+
+Redux soluciona problemas cuando la aplicacion empieza a crecer.
+
+Redux es una librería JavaScript que emite actualizaciones de estado en respuesta a acciones, con la peculiaridad de realizar dichas modificaciones a través de objetos sencillos, que reciben el nombre de acciones, y no a través de cambios directos en el estado.
+
+A continuación hacer la instalacion de una nueva carpeta la cual se llamara **redux-app**, para esto ubicar la carpeta en la terminal donde estan todos los proyectos del curso y ejecutar el comando
+
+`npx create-react-app redux-app`
+
+Redux puede ser incorporado en otros Frameworks por tanto aca esta el enlace de la [documentación](https://es.redux.js.org/)
+
+En este [enlace](https://react-redux.js.org/) se encuentra la documentación para utilizar redux en React.
+
+A continuación la [extensión](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=es) para realizar la instalación de Redux DevTools que se utilizara en el curso, se debe tener en cuenta que al realizar la instalación de la extensión se debe reiniciar el navegador Google Chrome.
+
+Una vez instalada la aplicación **redux-app** ubicarla en la terminal y realizar las siguientes instalaciones
+
+- `npm i redux`
+
+- `npm i react-redux`
+
+- `npm i redux-devtools-extension`
+
+- `npm i redux-thunk`
+
+- `npm i axios`
+
+Existe una forma para agregar todas las dependencia en un solo comando que es de la siguiente forma 
+
+- `npm i redux react-redux redux-devtools-extension redux-thunk axios`
+
+A continuación en la terminal ejecutar `code .` para abrir el editor de código en la carpeta del proyecto, abrir src y empezar a eliminar los archivos que no se van a utilizar los cuales son App.css, logo.svg, App.test.js, reportWebVitals.js y setupTests.js
+
+El archivo **index.js** dejarlo con la siguiente estructura porque no se esta utilizando reportWebVitals
+
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App.jsx';
+
+ReactDOM.render(
+<React.StrictMode>
+<App />
+</React.StrictMode>,
+document.getElementById('root')
+);
+```
+
+la extensión del archivo **App.js** pasarla a **.jsx**
+
+y por el momento esta sera la estructura del archivo **App.jsx**
+
+```
+import React from 'react'
+
+
+function App() {
+  return (
+    <div>
+
+    </div>
+  );
+}
+
+export default App;
+```
+
+## React Redux con Hooks y Ducks Configurando DUCKS
 
 ![assets-git/117.png](assets-git/117.png)
 
