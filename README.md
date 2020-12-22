@@ -26,7 +26,7 @@
 
 [React Redux con Hooks y Ducks Configurando DUCKS](#React-Redux-con-Hooks-y-Ducks-Configurando-DUCKS)
 
-[]()
+[React Redux con Hooks y Ducks Configurando STORE](#React-Redux-con-Hooks-y-Ducks-Configurando-STORE)
 
 []()
 
@@ -5101,6 +5101,334 @@ export default App;
 ```
 
 ## React Redux con Hooks y Ducks Configurando DUCKS
+
+Dentro de la carpeta **src** crear una sub carpeta que se llame **redux**, esta carpeta va a contener el archivo **store.js**, que sera una tienda donde esten todos los estados que usara **App.jsx**.
+
+La aplicación va a consumir una API de pokemones disponible en el siguiente [enlace](https://pokeapi.co/) por tanto el archivo se llamara **pokeDucks.js**. 
+
+Cuando trabajamos con Redux, existen 2 formas de trabajarlo 
+
+1. Separando acciones, constantes, types y reducer en archivos separados.
+
+2. Trabajar acciones, constantes,types y reducer en un solo archivo mediante la metodologia de Ducks que viene de Redux y esta disponible en el siguiente [enlace](https://github.com/erikras/ducks-modular-redux)
+
+**pokeDUCKS** va a tener las acciones necesarias para consumir la API y ya no se va a manejar directamente el `state` en un componente.
+
+El archivo **store.js** se va a utilizar porque en el proyecto vamos a tener mas de un `Ducks`
+
+Cuando se trabaja con `Ducks` existen 3 cosas principales a tener en cuenta. Las constantes, reducer y las acciones.
+
+Las acciones van a consumir la API y son las que llamaran a los pokemones que se encuentran en esta url [https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20](https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20) , si se quiere ver la aplicacion en formato json, realizar la instalacion de una extension en Chrome que se llama [JSON Viewer](https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh/related?hl=es).
+
+Una vez que se obtienen todos los pokemones con el reducer se acepta la lista de pokemones y los va a enviar a la constante o al estado que va a tener los pokemones se puedan consumir en algun componente.
+
+Para empezar abrimos el archivo **pokeDucks.js** y creamos una constante que va a obtener la `dataInicial` que sera el estado, el cual va a estar limpio. 
+
+Como se sabe que vamos a obener una lista de pokemones que se guarda en el API en `results` creamos el estado nombrandolo como `array : []`
+
+```
+// constantes
+const dataInicial = {
+    array : []
+}
+
+// reducer
+
+// acciones
+```
+
+el reducer debe llevar siempre esta estructura `export default function nombreDeLaFuncion(state, action){}` los parametros deben llevar al estado y las acciones. El estado es recomendable que empiece siempre con la `dataInicial`. Como se van a tener diferentes acciones se va a hacer uso de `switch` el cual tiene la estructura de casos, en el caso que ocurra caso 1, sucede algo, en el caso que ocurra caso 2, sucede otra cosa. etc.
+
+```
+// constantes
+const dataInicial = {
+    array : []
+}
+
+// reducer
+export default function pokeReducer(state = dataInicial, action){
+    switch(action.type){
+        
+    }
+}
+
+// acciones
+```
+
+El `type` son constantes que generalmente obtienen un estado y generalmente se nombran y se llaman en un string de la misma forma
+
+```
+// constantes
+const dataInicial = {
+    array : []
+}
+
+// types
+
+const OBTENER_POKEMONES_EXITO = 'OBTENER_POKEMONES_EXITO'
+
+// reducer
+export default function pokeReducer(state = dataInicial, action){
+    switch(action.type){
+
+    }
+}
+
+// acciones
+```
+
+La acción aun no esta definida por lo tanto se debe hacer un export de una funcion o constante que se llame `obtenerPokemonesAccion` y va a retornar 2 arrow function 
+
+```
+// acciones
+expor const obtenerPokemonesAccion = () => () => {
+    
+}
+```
+
+Se necesitan 2 arrow function por que en el primer parentesis o funcion de flecha, se reciben todos los parametros que se necesiten enviar a la funcion `obtenerPokemonesAccion`, hay acciones que necesitan recibir parametros y otras que no. En este caso no se necesitan recibir parametros.
+
+La segunda funcion de flecha si necesita recibir un `dispatch` y un `getState`.
+
+Con **dispatch** se activa al reducer `pokeReducer` y con **getState** se obtiene la `dataInicial` o información que se este almacenando en el state
+
+```
+// constantes
+const dataInicial = {
+    array : []
+}
+
+// types
+
+const OBTENER_POKEMONES_EXITO = 'OBTENER_POKEMONES_EXITO'
+
+// reducer
+export default function pokeReducer(state = dataInicial, action){
+    switch(action.type){
+
+    }
+}
+
+// acciones
+export const obtenerPokemonesAccion = () => (dispatch, getState) => {
+
+}
+```
+
+Como vamos a hacer el llamado de una API se va a utilizar async y se va a usar la libreria de `axios` y se utiliza `Try catch` para obtener la informacion o el error
+
+```
+import axios from 'axios'
+
+// constantes
+const dataInicial = {
+    array : []
+}
+
+// types
+
+const OBTENER_POKEMONES_EXITO = 'OBTENER_POKEMONES_EXITO'
+
+// reducer
+export default function pokeReducer(state = dataInicial, action){
+    switch(action.type){
+
+    }
+}
+
+// acciones
+export const obtenerPokemonesAccion = () => (dispatch, getState) => {
+    try {
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+```
+
+dentro de los corchetes de try generalmente se crea la siguiente estructura para obtener el API
+
+`const res = await axios.get('https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20')`
+
+axios genera la respuesta en `res.data` + la propiedad que queremos leer que es `results` de la API, donde se obtiene el array de 20 pokemones
+
+```
+// acciones
+export const obtenerPokemonesAccion = () => (dispatch, getState) => {
+    try {
+        const res = await axios.get('https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20')
+        res.data.results
+    } catch (error) {
+        console.log(error)
+    }
+}
+```
+
+para poder activar a `switch` se ocupa el `dispatch` abriendo parentesis y corchetes y ocupando el type `OBTENER_POKEMONES_EXITO`
+
+```
+// acciones
+export const obtenerPokemonesAccion = () => (dispatch, getState) => {
+    try {
+        const res = await axios.get('https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20')
+        dispatch({
+            type : OBTENER_POKEMONES_EXITO
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+```
+
+Es decir que switch va a leer la accion, luego a type y a partir de alli va a generar un caso que va a decir que en el caso de obtener pokemones con exito va a generar un accion
+
+```
+    switch(action.type){
+        case OBTENER_POKEMONES_EXITO:
+            return
+```
+
+```
+import axios from 'axios'
+
+// constantes
+const dataInicial = {
+    array : []
+}
+
+// types
+
+const OBTENER_POKEMONES_EXITO = 'OBTENER_POKEMONES_EXITO'
+
+// reducer
+export default function pokeReducer(state = dataInicial, action){
+    switch(action.type){
+        case OBTENER_POKEMONES_EXITO:
+            return
+
+    }
+}
+
+// acciones
+export const obtenerPokemonesAccion = () => (dispatch, getState) => {
+    try {
+        const res = await axios.get('https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20')
+        dispatch({
+            type : OBTENER_POKEMONES_EXITO
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+```
+
+`return` va a generar una modificacion del estado inicial el cual nombramos como `dataInicial` y como lo que se va a modificar es el array y se va a obtener una respuesta en las acciones se debe obtener con `payload:` toda la informacion
+
+```
+// acciones
+export const obtenerPokemonesAccion = () => (dispatch, getState) => {
+    try {
+        const res = await axios.get('https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20')
+        dispatch({
+            type : OBTENER_POKEMONES_EXITO,
+            payload: res.data.results
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+```
+```
+import axios from 'axios'
+
+// constantes
+const dataInicial = {
+    array : []
+}
+
+// types
+
+const OBTENER_POKEMONES_EXITO = 'OBTENER_POKEMONES_EXITO'
+
+// reducer
+export default function pokeReducer(state = dataInicial, action){
+    switch(action.type){
+        case OBTENER_POKEMONES_EXITO:
+            return
+
+    }
+}
+
+// acciones
+export const obtenerPokemonesAccion = () => (dispatch, getState) => {
+    try {
+        const res = await axios.get('https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20')
+        dispatch({
+            type : OBTENER_POKEMONES_EXITO,
+            payload: res.data.results
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+```
+
+para el caso de OBTENER_POKEMONES_EXITO el return sera una copia del estado inicial utilizando el simbolo de propagación `{...state}` y el array obtiene el `action.payload`.
+
+```
+// reducer
+export default function pokeReducer(state = dataInicial, action){
+    switch(action.type){
+        case OBTENER_POKEMONES_EXITO:
+            return {...state, array: action.payload}
+
+    }
+}
+```
+```
+import axios from 'axios'
+
+// constantes
+const dataInicial = {
+    array : []
+}
+
+// types
+
+const OBTENER_POKEMONES_EXITO = 'OBTENER_POKEMONES_EXITO'
+
+// reducer
+export default function pokeReducer(state = dataInicial, action){
+    switch(action.type){
+        case OBTENER_POKEMONES_EXITO:
+            return {...state, array: action.payload}
+        default:
+            return state
+    }
+}
+
+// acciones
+export const obtenerPokemonesAccion = () => (dispatch, getState) => {
+    try {
+        const res = await axios.get('https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20')
+        dispatch({
+            type : OBTENER_POKEMONES_EXITO,
+            payload: res.data.results
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+```
+
+En resumen cuando se obtenga una acción de `obtenerPokemonesAccion` en el reducer se van a enviar toda la lista de pokemones que recibe el `array: action.payload` y modifica el estado `dataInicial` y por tanto este ya no va a ser vacio si no que a obtener todos los resultados de los pokemon de la pagina que se guardan en `results`. En el caso que no se obtengan los pokemones con exito se retorna el estado inicial
+
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## React Redux con Hooks y Ducks Configurando STORE
 
 ![assets-git/117.png](assets-git/117.png)
 
