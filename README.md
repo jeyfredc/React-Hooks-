@@ -28,7 +28,7 @@
 
 [React Redux con Hooks y Ducks Configurando STORE](#React-Redux-con-Hooks-y-Ducks-Configurando-STORE)
 
-[]()
+[React Redux con Hooks y Ducks useDispatch y useSelector](#React-Redux-con-Hooks-y-Ducks-useDispatch-y-useSelector)
 
 []()
 
@@ -5429,6 +5429,71 @@ En resumen cuando se obtenga una acción de `obtenerPokemonesAccion` en el reduc
 </div>
 
 ## React Redux con Hooks y Ducks Configurando STORE
+
+El archivo **store.js** funciona de una forma similar a **index.js**, el cual sabemos que utiliza al componente `<App />` y no requiere de ninguna otra modificación.
+
+A continuacion se va a realizar la configuración del store pero es importante entender que generalmente no se va a modificar este archivo. El siguiente bloque de codigo siempre se va a utilizar o importar de la misma forma
+
+```
+import {createStore, combineReducers, compose, applyMiddleware} from 'redux'
+import thunk from 'redux-thunk'
+```
+
+una vez importadas las librerias lo unico que se debe importar al archivo **store.js** es el reducer que en este caso se llama `pokeReducer`
+
+`import pokeReducer from './pokeDucks'`
+
+una vez importado el reducer se van a combinar varios de ellos en el caso de que existieran y para esto se crea una constante llamada `rootReducer` que va a ser igual a `combineReducers` el cual recibe un objeto y recibe un nombre el cual es importante porque sera el que lea el componente. Entonces se identifica y se hace igual al reducer que se este utilizando
+
+```
+import {createStore, combineReducers, compose, applyMiddleware} from 'redux'
+import thunk from 'redux-thunk'
+
+import pokeReducer from './pokeDucks'
+
+const rootReducer = combineReducers({
+    pokemones: pokeReducer
+})
+```
+
+Ahora se hace la instalación de la extension de Google Chrome que se llama React Developer Tools. para esto se le debe agregar a continuación la siguiente linea.
+
+**Nota:** dentro de createStore, el unico parametro que se esta usando es rootReducer, el cual llama al reducer creado en **pokeDucks.js** y applyMiddleware recibe a `thunk` que es la libreria que sirve para trabajar con promesas
+
+Lo unico que se va a modificar a futuro es la constante **rootReducer**
+
+```
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+export default function generateStore(){
+    const store = createStore( rootReducer, composeEnhancers( applyMiddleware(thunk) ))
+    return store
+}
+```
+
+```
+import {createStore, combineReducers, compose, applyMiddleware} from 'redux'
+import thunk from 'redux-thunk'
+
+import pokeReducer from './pokeDucks'
+
+const rootReducer = combineReducers({
+    pokemones: pokeReducer
+})
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+export default function generateStore(){
+    const store = createStore( rootReducer, composeEnhancers( applyMiddleware(thunk) ))
+    return store
+}
+```
+
+<div align="right">
+  <small><a href="#tabla-de-contenido">🡡 volver al inicio</a></small>
+</div>
+
+## React Redux con Hooks y Ducks useDispatch y useSelector
 
 ![assets-git/117.png](assets-git/117.png)
 
